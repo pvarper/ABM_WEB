@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+		</p:dialog>
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar"
+			width="750px" closeOnEscape="false" header="Liberar/Cambio modalidad"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{liberacionARBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+				<p:dataTable id="table" var="row" value="#{liberacionARBean.cuentas}"
+					paginator="true" rows="10" first="0"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" selectionMode="single" 
+					selection="#{liberacionARBean.cuenta}" rowKey="#{row}">
+
+					<f:facet name="header">LISTA DE CUENTAS</f:facet>
+					<p:column headerText="ACCIONES" style="text-align: center;">
+						<p:commandLink id="deleteLink" title="Eliminar cuentas"
+							actionListener="#{liberacionARBean.deleteRoleUser(row)}"
+							update=":frmDatos">
+							<h:graphicImage alt="Eliminar" url="/resources/icons/delete.png" />
+							<p:confirm header="Confirmación"
+								message="¿Está seguro que desea eliminar este registro?"
+								icon="ui-icon-alert" />
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="CUENTA" >
+						<h:outputText value="#{row}" />
+					</p:column>
+				</p:dataTable>
+				<p:panel id="actCuentas">
+					<p:commandButton id="btnActualizar" value="Liberar/Cambio de Modalidad"
+						actionListener="#{liberacionARBean.liberarCuentasPos()}"
+						update=":frmDetalle :dlgNuevoEditarId" onclick="PF('statusDialog').show();"
+						oncomplete="PF('statusDialog').hide();" />
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{liberacionARBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId :frmDetalle :frmDatos">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+			<br />
+		</p:dialog>
+		
+		<p:dialog id="dlgDisponibilidadId" widgetVar="dlgDisp"
+			width="750px" closeOnEscape="false" header="Disponibilidad de Cuentas"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{liberacionARBean.visibleDisponibilidad}" closable="false">
+			<h:form id="frmDatosDisponibilidad">
+				<p:dataTable id="table" var="row" value="#{liberacionARBean.listaCiudades}"
+					 rows="12" first="0"	 
+					rowKey="#{row.id}">
+					<f:facet name="header">LISTA DE CIUDADES</f:facet>					
+					<p:column headerText="CIUDAD" >
+						<h:outputText value="#{row.ciudad}" />
+					</p:column>					
+					<p:column headerText="CANTIDAD" >
+						<h:outputText value="#{row.cantidad}" />
+					</p:column>
+				</p:dataTable>
+				
+					<p:commandButton id="btnSalirDisponibilidad" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{liberacionARBean.setVisibleDisponibilidad(false)}"
+						update=":dlgDisponibilidadId :frmDetalle :frmDatosDisponibilidad">
+						<p:resetInput target="frmDatosDisponibilidad" />
+					</p:commandButton>
+				
+			</h:form>
+			<br />
+		</p:dialog>
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+
+			<h1>LIBERACIÓN DE CUENTAS</h1>
+
+			<p:panel id="obtCuentas">
+
+			
+				<h:panelGrid columns="3">
+					<h:panelGrid columns="1">
+						<p:outputLabel for="somLocalidad" value="Localidades:" />
+						<p:selectOneMenu id="somLocalidad"
+							value="#{liberacionARBean.select}" filter="true"
+							filterMatchMode="contains" onselect="#{liberacionARBean.select}">
+							<f:selectItems value="#{liberacionARBean.selectItems}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+					<h:panelGrid columns="1">
+						<p:outputLabel for="somTipo" value="Modalidad de Cuenta:" />
+						<p:selectOneMenu id="somTipo" value="#{liberacionARBean.selectA}"
+							filter="true" filterMatchMode="contains"
+							onselect="#{liberacionARBean.selectA}">
+							<f:selectItems value="#{liberacionARBean.selectItemsA}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					
+				</h:panelGrid>
+
+				<p:commandButton id="btnGuardar" value="Obtener Cuentas"
+					actionListener="#{liberacionARBean.obtener()}"
+					update=":frmDetalle :dlgNuevoEditarId"
+					onclick="PF('statusDialog').show();"
+					oncomplete="PF('statusDialog').hide();" />
+					
+					<p:commandButton id="btnLiberar" value="Cancelar reserva de cuentas"
+					actionListener="#{liberacionARBean.liberarCuentasReservadas()}"
+					title="Se liberarán las cuentas que fueron reservadas para activador"
+					onclick="PF('statusDialog').show();"
+					oncomplete="PF('statusDialog').hide();" />
+					
+					<p:commandButton id="btnConsultarDisponibilidad" value="Consultar Disponibilidad"
+					actionListener="#{liberacionARBean.consultarDisponibilidad()}"
+					update=":frmDetalle :dlgDisponibilidadId"
+					title="Se consulta la disponibilidad de cuentas por ciudad"
+					onclick="PF('statusDialog').show();"
+					oncomplete="PF('statusDialog').hide();" />
+			</p:panel>
+			<br />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

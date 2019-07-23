@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>INTERPRETACION DE COMANDO CON ERROR</h1>
+
+			<h:panelGrid columns="1">
+				<h:panelGrid columns="1">
+					
+						<p:outputLabel for="cuenta" value="Cuenta:" />
+						<p:inputText id="cuenta" label="Cuenta" size="30"
+							value="#{interpretarBean.nroABM}"
+							validatorMessage="El campo Serie es obligatorio y no permite caracteres especiales">
+							<f:validateRegex
+								pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+						</p:inputText>
+						<p:outputLabel for="fecha" value="Fecha:" />
+						<p:inputText id="fecha" label="Fecha:" size="30"
+							value="#{interpretarBean.fecha}"
+							>
+						</p:inputText>
+
+						<p:commandButton id="btnBuscar" value="Buscar" title="Buscar"
+							actionListener="#{interpretarBean.buscar()}"
+							onclick="PF('statusDialog').show();"
+							oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+						
+
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:outputLabel for="itObs" value="Interpretacion:*" />
+					
+					<p:inputTextarea id="itObs" rows="25" cols="100"  
+							value="#{interpretarBean.observacion}" autoResize="false"  >
+					</p:inputTextarea>
+					
+
+				</h:panelGrid>
+
+
+			</h:panelGrid>
+
+			<br />
+
+
+		</h:form>
+
+		
+
+	</ui:define>
+</ui:composition>

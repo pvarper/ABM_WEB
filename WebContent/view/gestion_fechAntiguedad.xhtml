@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+		</p:dialog>
+		<br />
+		<br />
+		<h:form id="frmDetalle">
+			<center>
+				<h1>DEVOLVER ANTIG&#220;EDAD A CUENTA</h1>
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+							<p:panel id="itext">
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Cuenta : *" styleClass="name" />
+									<p:inputText id="itEH" label="cuenta" size="20" maxlength="8"
+										onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+										value="#{fechaCuentaBean.cuenta}"
+										validatorMessage="Valida el campo Cuenta solo permite Numero]">
+										<f:validateRegex pattern="[0-9.]+" />
+									</p:inputText>
+									<p:outputLabel for="mask" value="Fecha:" />
+									<p:calendar id="mask" value="#{fechaCuentaBean.fecha}"
+										yearRange="c-90:c+100" locale="es" readonlyInput="true"
+										navigator="true" required="true"
+										requiredMessage="Ingresar Fecha Valida" pattern="dd/MM/yyyy">
+									</p:calendar>
+								</h:panelGrid>
+							</p:panel>
+							<p:commandButton id="btnUpdate" value="Actualizar"
+								actionListener="#{fechaCuentaBean.update()}"
+								onclick="PF('statusDialog').show();"
+								oncomplete="PF('statusDialog').hide();"
+								update=":frmDetalle:itext tabla" />
+						</h:panelGrid>
+						<br />
+					</p:panel>
+					<center>
+						<p:dataTable id="tabla" var="row"
+							value="#{fechaCuentaBean.ltsUpdateCuenta}" paginator="true"
+							rows="10" first="0"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15,20" selectionMode="single"
+							rowKey="#{row.id}">
+							<f:facet name="header">LOG DE CAMBIOS DE ANTIG&#220;EDAD</f:facet>
+							<p:column headerText="ID">
+								<h:outputText value="#{row.id}" />
+							</p:column>
+							<p:column headerText="USUARIO">
+								<h:outputText value="#{row.usr}" />
+							</p:column>
+							<p:column headerText="CUENTA">
+								<h:outputText value="#{row.cuenta}" />
+							</p:column>
+							<p:column headerText="FECHA ACCION">
+								<h:outputText value="#{row.dato_fecha_accion}" />
+							</p:column>
+							<p:column headerText="FECHA ANTERIOR">
+								<h:outputText value="#{row.dato_fecha_actual}" />
+							</p:column>
+							<p:column headerText="FECHA ACTUAL">
+								<h:outputText value="#{row.dato_fecha_update}" />
+							</p:column>
+						</p:dataTable>
+					</center>
+				</h:panelGrid>
+			</center>
+		</h:form>
+	</ui:define>
+</ui:composition>

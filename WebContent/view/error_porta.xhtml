@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+
+		<h:form id="frmDetalle">
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				header="Please wait..." appendTo="@(body)" closable="false"
+				resizable="false">
+
+				<h:graphicImage id="deleteImage" alt="Eliminar"
+					url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+			</p:dialog>
+
+
+
+			<h1>ERROR PORTABILIDAD</h1>
+			<h:panelGrid columns="2">
+				<p:panel>
+					<h:panelGrid columns="1">
+						<p:panel id="itext">
+							<h:panelGrid columns="2">
+								<p:outputLabel for="itNroPortado" value="Nro Portado" />
+								<p:inputText id="itNroPortado" label="Nro Portado" size="30"
+									maxlength="8" value="#{portabilidadBean.nroPortado}"
+									validatorMessage="El  valor del campo nroPortado solo permite numeros">
+									<f:validateRegex
+										pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+								</p:inputText>
+
+								<p:outputLabel for="itNrotemporal" value="Nro temporal" />
+								<p:inputText id="itNrotemporal" label="Nro temporal" size="30"
+									maxlength="8" value="#{portabilidadBean.nroTemporal}"
+									validatorMessage="El  valor del campo nroTemporal solo permite numeros">
+									<f:validateRegex
+										pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+								</p:inputText>
+								<p:outputLabel for="itIccid" value="Iccid" />
+								<p:inputText id="itIccid" label="Iccid" size="30" maxlength="19"
+									value="#{portabilidadBean.iccd}"
+									validatorMessage="El  valor del campo ICCID solo permite numeros">
+									<f:validateRegex
+										pattern="#{properties.EXPRESION_REGULAR_ICCID}" />
+								</p:inputText>
+							</h:panelGrid>
+
+
+						</p:panel>
+						<p:panel>
+							<h:panelGrid columns="1">
+								<p:commandButton id="btnProcesar" value="Procesar"
+									title="Procesar" onclick="PF('statusDialog').show();"
+									oncomplete="PF('statusDialog').hide();"
+									actionListener="#{portabilidadBean.procesar()}"
+									update=":frmDetalle">
+
+								</p:commandButton>
+							</h:panelGrid>
+						</p:panel>
+
+						<h:panelGrid columns="2" style="margin-bottom:10px"
+							cellpadding="5">
+							<p:outputLabel for="city" value="City:" />
+							<p:selectOneRadio id="city" value="#{radioView.city}"
+								layout="grid" columns="3">
+								<f:selectItems value="#{radioView.cities}" var="c"
+									itemLabel="#{city}" itemValue="#{city}" />
+							</p:selectOneRadio>
+						</h:panelGrid>
+
+
+					</h:panelGrid>
+				</p:panel>
+
+				<p:scrollPanel mode="native" style="width:950px;height:430px">
+
+					<p:panel>
+						<h3 style="margin-top: 0">Consola</h3>
+						<h:outputText id="out1" escape="false"
+							value="#{portabilidadBean.textArea}" />
+
+					</p:panel>
+
+				</p:scrollPanel>
+
+
+
+			</h:panelGrid>
+
+
+
+
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

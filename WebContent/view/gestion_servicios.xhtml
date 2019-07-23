@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="60%"
+			closeOnEscape="false" header="Adicionar Administrador" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{servicioBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+
+				<h:panelGrid columns="2">
+
+					<p:outputLabel for="itPlaId" rendered="#{servicioBean.edit}"
+						value="Id Plataforma:" />
+					<p:outputLabel id="itPlaId" rendered="#{servicioBean.edit}"
+						disabled="true" size="30" value="#{servicioBean.pla.id}" />
+
+					<p:outputLabel for="itIdServicio" value="CodServicio:" />
+					<p:outputLabel id="itIdServicio"
+						value="#{servicioBean.pla.idServicio}" label="CodServicio">
+
+					</p:outputLabel>
+
+					<p:outputLabel for="itMenu" value="Descripción: " />
+					<p:outputLabel id="itMenu" size="30" maxlength="50"
+						value="#{servicioBean.pla.descripcion}" label="Descripción">
+					</p:outputLabel>
+
+
+					<p:outputLabel for="itTiposervicio" value="Tipo Servicio:" />
+					<p:outputLabel id="itTiposervicio"
+						value="#{servicioBean.pla.tipoServicio}" label="Tipo Servicio">
+
+					</p:outputLabel>
+
+					<p:outputLabel for="itTipoUsuario" value="Tipo Usuario:" />
+					<p:inputText id="itTipoUsuario" size="30" maxlength="50"
+						value="#{servicioBean.pla.tipoUsuario}" label="Tipo Usuario"
+						validatorMessage="Para este campo se filtraron los caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+					</p:inputText>
+
+					<p:outputLabel for="itpwd" value="Password:" />
+					<p:inputText id="itpwd" size="30" maxlength="50"
+						value="#{servicioBean.pla.pwd}" label="Password"
+						validatorMessage="EL campo pwd no permite espacios ni caracteres especiales">
+
+					</p:inputText>
+
+					<p:outputLabel for="itObs" value="Observación:" />
+					<p:inputText id="itObs" size="30"
+						value="#{servicioBean.pla.observacion}" label="Observacion">
+
+					</p:inputText>
+
+					<p:outputLabel for="somRol" value="Administradores:" />
+					<p:selectOneMenu id="somRol" value="#{servicioBean.select}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{servicioBean.select}">
+						<f:selectItems value="#{servicioBean.selectItems}" />
+					</p:selectOneMenu>
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btnAgregar" value="Agregar"
+						actionListener="#{servicioBean.agregarAdmin()}"
+						update=":dlgNuevoEditarId :frmDatos" />
+
+
+				</h:panelGrid>
+
+
+				<p:dataTable var="row" value="#{servicioBean.listUsuarioAdd}"
+					id="tabAdd" paginator="true" rows="10" first="0"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" selectionMode="single"
+					selection="#{servicioBean.usu}" rowKey="#{row.usuarioId}">
+					<f:facet name="header">LISTA DE ADMINISTRADORES</f:facet>
+
+					<p:column style="text-align: center;" headerText="ACCIONES">
+
+						<p:commandLink id="delLink" title="Eliminar Administrador"
+							actionListener="#{servicioBean.delAdmin(row)}"
+							update=":dlgNuevoEditarId :frmDatos">
+							<h:graphicImage id="delImage" alt="Eliminar"
+								url="/resources/icons/delete.png" styleClass="icon" />
+						</p:commandLink>
+
+
+					</p:column>
+
+					<p:column headerText="USUARIO" style="text-align: center;"
+						filterBy="#{row.login}" filterMatchMode="contains">
+						<h:outputText value="#{row.login}" />
+					</p:column>
+
+					<p:column headerText="NOMBRE" style="text-align: center;"
+						filterBy="#{row.nombre}" filterMatchMode="contains">
+						<h:outputText value="#{row.nombre}" />
+					</p:column>
+
+					<p:column headerText="MAIL" style="text-align: center;"
+						filterBy="#{row.correo}" filterMatchMode="contains">
+						<h:outputText value="#{row.correo}" />
+					</p:column>
+
+					<p:column headerText="TELEFONO" style="text-align: center;"
+						filterBy="#{row.telefono}" filterMatchMode="contains">
+						<h:outputText value="#{row.telefono}" />
+					</p:column>
+
+
+
+
+
+
+				</p:dataTable>
+
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btnGuardar" value="Guardar"
+						rendered="#{servicioBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+						actionListener="#{servicioBean.guardar()}"
+						update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+
+
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						actionListener="#{servicioBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>GESTIÓN DE SERVICIOS</h1>
+			
+			<p:panelGrid>
+				<p:outputLabel for="somAdminis" value="Administradores:" />
+					<p:selectOneMenu id="somAdminis" value="#{servicioBean.select}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{servicioBean.select}">
+						<f:selectItems value="#{servicioBean.selectItems}" />
+					</p:selectOneMenu>
+			</p:panelGrid>
+			
+			<br />
+			
+			<p:commandButton value="Buscar Servicios" icon="ui-icon-document"
+				
+				style="width:140px;" actionListener="#{servicioBean.buscarServiciosXadmin()}"
+				onclick="PF('statusDialog').show();"
+				oncomplete="PF('statusDialog').hide();"
+				update=" :frmDatos :frmDetalle :frmDetalle" />
+			
+			<p:commandButton value="Actualizar" icon="ui-icon-document"
+				rendered="#{servicioBean.isAuthorized(privilegio.ACCION_CREAR)}"
+				style="width:140px;" actionListener="#{servicioBean.actualizar()}"
+				onclick="PF('statusDialog').show();"
+				oncomplete="PF('statusDialog').hide();"
+				update=" :frmDatos :frmDetalle" />
+
+			<p:commandButton value="Editar" icon="ui-icon-pencil"
+				
+				style="width:140px;"
+				actionListener="#{servicioBean.ediTPlataforma()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<br />
+			<p:dataTable var="row" value="#{servicioBean.listPlat}" id="tab"
+				paginator="true" rows="10" first="0"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{servicioBean.pla}" rowKey="#{row.id}">
+				<f:facet name="header">LISTA DE SERVICIOS</f:facet>
+
+				<p:column style="text-align: center;" headerText="ACCIONES"
+					exportable="false">
+					<p:commandLink id="editLink" title="Editar Requerimiento"
+						
+						actionListener="#{servicioBean.ediTPlataforma(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage id="editImage" alt="Modificar"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+
+
+				</p:column>
+
+				<p:column headerText="ID SERVICIO" style="text-align: center;"
+					filterBy="#{row.idServicio}" filterMatchMode="contains">
+					<h:outputText value="#{row.idServicio}" />
+				</p:column>
+
+				<p:column headerText="DESCRIPCION" style="text-align: center;"
+					filterBy="#{row.descripcion}" filterMatchMode="contains">
+					<h:outputText value="#{row.descripcion}" />
+				</p:column>
+
+				<p:column headerText="TIPO DE SERVICIO" style="text-align: center;"
+					filterBy="#{row.tipoServicio}" filterMatchMode="contains">
+					<h:outputText value="#{row.tipoServicio}" />
+				</p:column>
+
+				<p:column headerText="TIPO DE USUARIO" style="text-align: center;"
+					filterBy="#{row.tipoUsuario}" filterMatchMode="contains">
+					<h:outputText value="#{row.tipoUsuario}" />
+				</p:column>
+
+
+				<p:column headerText="PASSWORD" style="text-align: center;"
+					filterBy="#{row.pwd}" filterMatchMode="contains">
+					<h:outputText value="#{row.pwd}" />
+				</p:column>
+
+				<p:column headerText="OBSERVACION" style="text-align: center;"
+					filterBy="#{row.observacion}" filterMatchMode="contains">
+					<h:outputText value="#{row.observacion}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+			<h:commandLink id="excel">
+				<p:graphicImage url="/resources/icons/excel.png" />
+				<p:dataExporter type="xls" target="tab" fileName="Servicios" />
+			</h:commandLink>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

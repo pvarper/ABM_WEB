@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+
+			<h1>LIBERACIÓN DE CUENTAS</h1>
+
+			<p:panel id="obtCuentas">
+
+				<h:panelGrid columns="3">
+					<h:panelGrid columns="1">
+						<p:outputLabel for="somLocalidad" value="Localidades:" />
+						<p:selectOneMenu id="somLocalidad"
+							value="#{liberacionBean.select}" filter="true"
+							filterMatchMode="contains" onselect="#{liberacionBean.select}">
+							<f:selectItems value="#{liberacionBean.selectItems}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+					<h:panelGrid columns="1">
+						<p:outputLabel for="somTipo" value="Modalidad de Cuenta:" />
+						<p:selectOneMenu id="somTipo" value="#{liberacionBean.selectA}"
+							filter="true" filterMatchMode="contains"
+							onselect="#{liberacionBean.selectA}">
+							<f:selectItems value="#{liberacionBean.selectItemsA}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+					<h:panelGrid columns="1">
+						<p:outputLabel for="itCantidad" value="Cantidad:" />
+						<p:inputText id="itCantidad" label="Cantidad" size="5"
+							maxlength="5" value="#{liberacionBean.cantidad}"
+							validatorMessage="El campo Cantidad solo permite numeros">
+							<f:validateRegex
+								pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+						</p:inputText>
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<p:commandButton id="btnGuardar" value="Obtener Cuentas"
+					actionListener="#{liberacionBean.obtener()}" update=":frmDetalle"
+					onclick="PF('statusDialog').show();"
+					oncomplete="PF('statusDialog').hide();" />
+
+				<h:commandButton id="download" value="Exportar"
+					disabled="#{not liberacionBean.ready}"
+					action="#{liberacionBean.export()}" />
+
+			</p:panel>
+
+
+
+			<br />
+
+			<p:panel id="actCuentas">
+			
+				<h:panelGrid columns="1">
+						<p:outputLabel for="somTipoB" value="Modalidad de Cuenta:" />
+						<p:selectOneMenu id="somTipoB" value="#{liberacionBean.selectB}"
+							filter="true" filterMatchMode="contains"
+							onselect="#{liberacionBean.selectB}">
+							<f:selectItems value="#{liberacionBean.selectItemsB}" />
+						</p:selectOneMenu>
+				</h:panelGrid>
+				
+				<p:fileUpload fileUploadListener="#{liberacionBean.handleFileUpload}"
+					mode="advanced" auto="true"
+					sizeLimit="100000" allowTypes="/(\.|\/)(txt)$/">
+				</p:fileUpload>
+
+				<p:commandButton id="btnActualizar" value="Actualizar Cuentas"
+					actionListener="#{liberacionBean.actualizar()}" update=":frmDetalle"
+					onclick="PF('statusDialog').show();"
+					oncomplete="PF('statusDialog').hide();" />
+
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

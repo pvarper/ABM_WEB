@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>BAJA DE USUARIOS</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+
+							
+
+							<p:panel id="basicc" header="Plataformas">
+								<p:selectManyCheckbox id="grid"
+									value="#{bajaBean.selectedPlataforma}" layout="grid"
+									columns="4">
+									<f:selectItems event="change"
+										value="#{bajaBean.selectItemPlataforma}" update="iddd">
+									</f:selectItems>
+
+								</p:selectManyCheckbox>
+							</p:panel>
+
+							<p:panel id="pa">
+								<h:panelGrid columns="1">
+
+									<p:selectOneRadio id="idMa" value="#{bajaBean.radioBuscar}">
+										<f:selectItem itemLabel="AD TIGOBO" itemValue="false" />
+										<f:selectItem itemLabel="AD TSBOLIVIA" itemValue="true" />
+
+									</p:selectOneRadio>
+
+									<p:outputLabel for="itB" value="Buscar Usuario por EH" />
+									<p:inputText id="itB" maxlength="100" size="30"
+										value="#{bajaBean.buscarnombre}" label="Nombre">
+
+									</p:inputText>
+									<p:commandButton id="btnB" value="Buscar"
+										actionListener="#{bajaBean.buscarPorNombre()}"
+										onclick="PF('statusDialog').show();" update="pa"
+										oncomplete="PF('statusDialog').hide();"  />
+								</h:panelGrid>
+							</p:panel>
+							
+							<p:panel>
+								<p:selectOneRadio id="idMasivo" value="#{bajaBean.radioMasivo}">
+									<f:selectItem itemLabel="Masivo" itemValue="false" />
+									<f:selectItem itemLabel="Simple" itemValue="true" />
+									<p:ajax event="change" update="iddd" />
+								</p:selectOneRadio>
+
+
+							</p:panel>
+							
+							
+							<p:panel id="iddd">
+								<h:panelGrid columns="1">
+									FORMATO ARHIVO .txt: 
+									<pre><p:outputLabel for="itNombre" style="white-space: pre-wrap"
+										value="#{bajaBean.formato()}" /></pre>
+
+									<p:outputLabel for="itNombre" value="Usuarios:*"
+										rendered="#{bajaBean.radioMasivo}" />
+									<p:inputTextarea id="itNombre" rows="3" cols="80"
+										maxlength="200" rendered="#{bajaBean.radioMasivo}"
+										value="#{bajaBean.usuario}" label="Nombre"
+										validatorMessage="Para este campo se filtraron los caracteres especiales">
+										<f:validateRegex pattern="#{properties.ER_LISTA_USUARIOS}"></f:validateRegex>
+									</p:inputTextarea>
+
+									<p:fileUpload fileUploadListener="#{bajaBean.handleFileUpload}"
+										rendered="#{!bajaBean.radioMasivo}" mode="advanced"
+										auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(txt)$/">
+									</p:fileUpload>
+
+								</h:panelGrid>
+
+								<p:commandButton id="btnGuardar" value="Eliminar"
+									actionListener="#{bajaBean.eliminar()}"
+									onclick="PF('statusDialog').show();"
+									oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+							</p:panel>
+
+
+
+
+						</h:panelGrid>
+					</p:panel>
+
+
+				</h:panelGrid>
+			</center>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

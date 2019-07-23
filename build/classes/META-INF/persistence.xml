@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+	<persistence-unit name="pUnit_dbSystem"
+		transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>abmDS</jta-data-source>		
+		<!-- <jta-data-source>mod_user_ps</jta-data-source> -->
+		<class>support.user.model.MuBitacora</class>
+		<class>support.user.model.MuFormulario</class>
+		<class>support.user.model.MuGrupoAd</class>
+		<class>support.user.model.MuRolFormularioPK</class>
+		<class>support.user.model.MuRolFormulario</class>
+		<class>support.user.model.MuRol</class>
+		<class>support.user.model.Parametro</class>
+		<class>support.user.model.MuAccion</class>
+		<class>support.ussd.model.TPlataforma</class>
+		<class>support.ussd.model.TFecha</class>
+		<class>support.ussd.model.TArea</class>
+		<class>support.ussd.model.TTerminales</class>
+		<class>support.ussd.model.TDocumento</class>
+		<class>support.ussd.model.TTipoDocumento</class>
+		<class>support.ussd.model.TDh</class>
+		<class>support.ussd.model.TFreem</class>
+		<class>support.ussd.model.TProceso</class>
+		<class>support.ussd.model.TTop</class>
+		<class>support.ussd.model.TAntecedente</class>
+		<class>support.ussd.model.TAppinvolucrada</class>
+		<class>support.ussd.model.TCronologia</class>
+		<class>support.ussd.model.TDato</class>
+		<class>support.ussd.model.THoraan</class>
+		<class>support.ussd.model.THoraanimg</class>
+		<class>support.ussd.model.THoracro</class>
+		<class>support.ussd.model.THoracroimg</class>
+		<class>support.ussd.model.TParticipante</class>
+		<class>support.ussd.model.TPlanaccion</class>
+		<class>support.ussd.model.TPuntosmejora</class>
+		<class>support.ussd.model.TReporte</class>
+		<class>support.ussd.model.TAbmAdm</class>
+		<class>support.ussd.model.TAbmAdmPK</class>
+		<class>support.ussd.model.TSerAdm</class>
+		<class>support.ussd.model.TSerAdmPK</class>
+		<class>support.ussd.model.TServicio</class>
+		<class>support.ussd.model.TAbm</class>
+		<class>support.ussd.model.TAbmAdjunto</class>
+		<class>support.user.model.MuUsuario</class>
+		<class>support.ussd.model.TAnitaUsuario</class>
+		<class>support.ussd.model.TPlataformaAdministrador</class>
+		<class>support.ussd.model.TPlataformaAdministradorPK</class>
+		<class>support.agenda.model.AgendaActividad</class>
+		<class>support.agenda.model.AgendaArquitecto</class>
+		<class>support.agenda.model.AgendaDetalle</class>
+		<class>support.agenda.model.AgendaTarea</class>
+		<class>support.agenda.model.AgendaTipo</class>
+
+
+		
+
+
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+		<!--<properties> -->
+		<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" 
+			/> -->
+		<!-- <property name="hibernate.hbm2ddl.auto" value="none" /> -->
+
+		<!-- <property name="hibernate.show_sql" value="false" /> -->
+		<!-- <property name="hibernate.format_sql" value="false" /> -->
+
+		<!-- <property name="hibernate.transaction.manager_lookup_class" -->
+		<!-- value="org.hibernate.transaction.JBossTransactionManagerLookup" /> -->
+		<!--</properties> -->
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.default_schema" value="public" />
+			<property name="hibernate.transaction.manager_lookup_class"
+				value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+		</properties>
+	</persistence-unit>
+
+</persistence>

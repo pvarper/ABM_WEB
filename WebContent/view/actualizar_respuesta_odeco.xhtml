@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">		
+		
+		
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>Cambio Estado Odecos</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+
+							<p:panel>
+								<p:selectOneRadio id="idMasivo"
+									value="#{actualizarRespuestaOdecoBean.radioSeleccionado}">
+									<f:selectItem itemLabel="Procedente" itemValue="1" />
+									<f:selectItem itemLabel="Improcedente" itemValue="2" />
+									<f:selectItem itemLabel="Parcialmente Procedente" itemValue="3" />									
+								</p:selectOneRadio>
+
+
+							</p:panel>
+
+							<p:panel id="itext">
+								<h:panelGrid columns="2">
+							
+									<p:outputLabel for="itOdeco" value="Odeco:" />
+									<p:inputText id="itOdeco" label="Odeco" size="30"
+										maxlength="40" value="#{actualizarRespuestaOdecoBean.serie}"
+										validatorMessage="El campo Serie es obligatorio, Debe escribirse en mayusculas y no permite caracteres especiales salvo /">
+										<f:validateRegex
+											pattern="#{properties.EXPRESION_REGULAR_ODECO}"
+											/>
+									</p:inputText>
+								</h:panelGrid>
+							</p:panel>
+							<p:panel id="iddd">
+								<h:panelGrid columns="1">
+									<p:commandButton id="btnGuardar" value="Guardar"
+										title="Boton Enviar"																			
+										actionListener="#{actualizarRespuestaOdecoBean.guardarCambioEstado()}"
+																				
+									 	 
+									 	update=":frmDetalle" />										
+								</h:panelGrid>
+							</p:panel>
+						</h:panelGrid>
+					</p:panel>
+				</h:panelGrid>
+			</center>
+
+
+		</h:form>
+		
+
+	</ui:define>
+</ui:composition>

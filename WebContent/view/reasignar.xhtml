@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+
+			<h1>REASIGNAR ABM</h1>
+
+			<h:panelGrid columns="3">
+				<h:panelGrid columns="1">
+					<p:outputLabel for="somAdminis" value="Administradores:" />
+					<p:selectOneMenu id="somAdminis" value="#{reasignarBean.select}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{reasignarBean.select}">
+						<f:selectItems value="#{reasignarBean.selectItems}" />
+						<p:ajax event="change" update="idabm,idser"
+							listener="#{reasignarBean.obtenerPendientes()}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid id="idabm" columns="1">
+					<p:outputLabel for="somAbms" value="Abm's pendientes:" />
+					<p:selectOneMenu id="somAbms" value="#{reasignarBean.selectAbm}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{reasignarBean.selectAbm}">
+						<f:selectItems value="#{reasignarBean.selectItemsAbm}" />
+						<p:ajax event="change" update="idser"
+							listener="#{reasignarBean.obtenerServiciosXAbmXAdmin()}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid id="idser" columns="1">
+					<p:outputLabel for="somSer" value="Servicios del ABM:" />
+					<p:selectCheckboxMenu id="somSer"
+						value="#{reasignarBean.selectedMember}" label="Servicios"
+						style="width: 188px" filter="true" filterMatchMode="contains"
+						panelStyle="width:250px">
+						<f:selectItems value="#{reasignarBean.selectMembers}" />
+					</p:selectCheckboxMenu>
+				</h:panelGrid>
+
+				<h:panelGrid columns="1">
+					<p:outputLabel for="somAdminAs" value="Administradores:" />
+					<p:selectOneMenu id="somAdminAs" value="#{reasignarBean.selectA}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{reasignarBean.selectA}">
+						<f:selectItems value="#{reasignarBean.selectItemsA}" />
+
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:commandButton id="btnGuardar" value="Reasignar"
+				actionListener="#{reasignarBean.reasignar()}"
+				onclick="PF('statusDialog').show();"
+				oncomplete="PF('statusDialog').hide();"  />
+
+
+
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

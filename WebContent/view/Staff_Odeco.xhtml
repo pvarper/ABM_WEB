@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<h:form id="frmDatos">
+			<p:growl id="message" showDetail="true" />
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h1>Migrar o Restaurar Bandeja de un STAFF</h1>
+						<h:panelGrid columns="2">
+							<p:outputLabel for="tipo_operation" value="Tipo Operaci&#243;n: " />
+							<p:selectOneMenu id="tipo_operation"
+								value="#{migrarAgenteOdecoBean.id_Operacion}"
+								style="width:220px;">
+
+								<f:selectItem itemLabel="Seleccionar" itemValue="" />
+								<f:selectItem itemLabel="Migrar" itemValue="0" />
+								<f:selectItem itemLabel="Restaurar" itemValue="1" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="staff_Vacacion" value="Coor. Vacaci&#243;n: " />
+							<p:selectOneMenu id="staff_Vacacion"
+								value="#{migrarAgenteOdecoBean.id_Staff_vacacion}"
+								style="width:220px;">
+								<p:ajax listener="#{migrarAgenteOdecoBean.cargarLista}"
+									update="staff" />
+								<f:selectItem itemLabel="Seleccionar" itemValue="" />
+								<f:selectItems var="vacion" itemLabel="#{vacion.nombre}"
+									value="#{migrarAgenteOdecoBean.ltsVacacion}"
+									itemValue="#{vacion.idUsuario}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="staff" value="Coor. Recepci&#243;n: " />
+							<p:selectOneMenu id="staff"
+								disabled="#{migrarAgenteOdecoBean.bandera}"
+								value="#{migrarAgenteOdecoBean.id_Staff_recepcion}"
+								style="width:220px;">
+								<f:selectItem itemLabel="Seleccionar" itemValue="" />
+								<f:selectItems var="rec" itemLabel="#{rec.nombre}"
+									value="#{migrarAgenteOdecoBean.ltsVacacion1}"
+									itemValue="#{rec.idUsuario}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Realizar Operaci&#243;n"
+								actionListener="#{migrarAgenteOdecoBean.realizarOperacion}"
+								update=":frmDatos:message">
+								<p:confirm header="Confirmation"
+									message="Esta seguro de realizar la operaci&#243;n..?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+
+						</h:panelGrid>
+						<br />
+						<p:dataTable var="row"
+							value="#{migrarAgenteOdecoBean.ltsUsuarioOdeco}" paginator="true"
+							rows="10" first="0"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" selectionMode="single"
+							rowKey="#{row.idUsuario}">
+							<f:facet name="header">LISTA DE AGENTES</f:facet>
+							<p:column headerText="USUARIO" filterBy="#{row.login}"
+								filterMatchMode="contains">
+								<h:outputText value="#{row.login}" />
+							</p:column>
+
+							<p:column headerText="NOMBRE" filterBy="#{row.nombre}"
+								filterMatchMode="contains">
+								<h:outputText value="#{row.nombre}" />
+							</p:column>
+
+							<p:column headerText="CORREO" filterBy="#{row.correo}"
+								filterMatchMode="contains">
+								<h:outputText value="#{row.correo}" />
+							</p:column>
+
+							<p:column headerText="TELEFONO" filterBy="#{row.telefono}"
+								filterMatchMode="contains">
+								<h:outputText value="#{row.telefono}" />
+							</p:column>
+
+							<p:column headerText="SUPERVISOR"
+								filterBy="#{row.responsable_id}" filterMatchMode="contains">
+								<h:outputText value="#{row.responsable_id}" />
+							</p:column>
+
+							<p:column headerText="ROL" filterBy="#{row.rol_id}"
+								filterMatchMode="contains">
+								<h:outputText value="#{row.rol_id}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</p:panel>
+				</h:panelGrid>
+
+			</center>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

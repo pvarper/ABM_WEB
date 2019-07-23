@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>ALTA DE USUARIOS EN BCCS</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+
+							<p:panel id="iddd">
+
+								<p:panel>
+									<p:selectOneRadio id="idMasivo"
+										value="#{altaBCCS.radioPlataformas}">
+										<f:selectItem itemLabel="All" itemValue="1" />
+										<f:selectItem itemLabel="BCCS" itemValue="2" />
+										
+										<f:selectItem itemLabel="AS" itemValue="4" />
+										<p:ajax event="change" update="iddd"
+											listener="#{altaBCCS.check()}" />
+									</p:selectOneRadio>
+
+
+								</p:panel>
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Perfiles:*" styleClass="name"
+										rendered="#{((altaBCCS.check()==1) || (altaBCCS.check()==2))? true:false}" />
+									<p:selectCheckboxMenu id="perfil"
+										rendered="#{((altaBCCS.check()==1) || (altaBCCS.check()==2))? true:false}"
+										value="#{altaBCCS.selectedPerfil}" label="Perfiles"
+										style="width: 188px" filter="true"
+										filterMatchMode="contains" panelStyle="width:250px">
+										<f:selectItems value="#{altaBCCS.selectPerfiles}" />
+									</p:selectCheckboxMenu>
+
+									<h:outputLabel value="Areas:*" styleClass="name"
+										rendered="#{((altaBCCS.check()==1) || (altaBCCS.check()==2) || (altaBCCS.check()==4))? true:false}" />
+									<p:selectOneMenu id="Area" value="#{altaBCCS.selectedArea}"
+										rendered="#{((altaBCCS.check()==1) || (altaBCCS.check()==2) || (altaBCCS.check()==4))? true:false}"
+										style="width: 188px">
+										<f:selectItems value="#{altaBCCS.selectAreas}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								
+								<h:panelGrid columns="1">
+
+									<p:outputLabel value="FORMATO: #{altaBCCS.formato}" />
+									<p:fileUpload fileUploadListener="#{altaBCCS.handleFileUpload2}"
+										mode="advanced" auto="true" sizeLimit="100000"
+										allowTypes="/(\.|\/)(xls|xlsx)$/">
+									</p:fileUpload>
+
+								</h:panelGrid>
+
+								<p:commandButton id="btnGuardar" value="Guardar"
+									actionListener="#{altaBCCS.decidir(altaBCCS.check())}"
+									onclick="PF('statusDialog').show();"
+									oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+							</p:panel>
+
+
+
+						</h:panelGrid>
+					</p:panel>
+
+
+				</h:panelGrid>
+			</center>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

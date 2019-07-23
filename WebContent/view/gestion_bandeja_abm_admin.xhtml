@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+		<p:dialog id="dlgProcesarId" widgetVar="dlgProcesar" width="40%"
+			closeOnEscape="true" header="Procesar" modal="true" resizable="false"
+			appendTo="@(body)" visible="#{bandejaAdminBean.visibleProcesar}"
+			closable="true">
+
+			<h:form id="frmDatos2">
+				<p:messages showDetail="true" showSummary="false" autoUpdate="true"
+					closable="true" />
+				<h:panelGrid columns="2">
+
+					<p:outputLabel for="itUsuario" value="Usuario Asignado:" />
+					<p:inputTextarea id="itUsuario" rows="10" cols="50"
+						maxlength="1000" autoResize="false"
+						value="#{bandejaAdminBean.abmadmin.usuarioAsignado}">
+
+					</p:inputTextarea>
+
+					<p:outputLabel for="itObser" value="Observacion Admin:" />
+					<p:inputTextarea id="itObser" rows="10" cols="50" maxlength="1000"
+						autoResize="false"
+						value="#{bandejaAdminBean.abmadmin.observacion}" label="Nombre">
+					</p:inputTextarea>
+				</h:panelGrid>
+
+				<p:panel>
+					<h:outputText value="Cargar Adjunto con los usuarios: *" />
+					<p:fileUpload
+						fileUploadListener="#{bandejaAdminBean.handleFileUpload}"
+						onstart="PF('statusDialog').show();"
+						oncomplete="PF('statusDialog').hide();" mode="advanced"
+						auto="true" label="Seleccionar Archivo" sizeLimit="104857600"
+						invalidSizeMessage="El tamaño es demasiado grande"
+						allowTypes="/(\.|\/)(xlsx|xls|XLSX|XLS)$/">
+					</p:fileUpload>
+
+				</p:panel>
+
+				<p:selectOneRadio id="idMasivo"
+					value="#{bandejaAdminBean.radioProce}">
+					<f:selectItem itemLabel="PROCESADO" itemValue="1" />
+					<f:selectItem itemLabel="OBSERVADO" itemValue="2" />
+					<f:selectItem itemLabel="RECHAZADO" itemValue="3" />
+					<f:selectItem itemLabel="PENDIENTE" itemValue="4" />
+
+				</p:selectOneRadio>
+
+
+
+
+				<h:panelGrid columns="2">
+					<p:commandButton id="btnGuardar" value="Guardar"
+						actionListener="#{bandejaAdminBean.guardar()}"
+						update=":dlgNuevoEditarId :frmDatos2 :frmDatos :dlgProcesarId :frmDetalle" />
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{bandejaAdminBean.setVisibleProcesar(false)}"
+						update=":dlgProcesarId">
+						<p:resetInput target="frmDatos2" />
+					</p:commandButton>
+
+
+				</h:panelGrid>
+
+
+
+
+			</h:form>
+			<br />
+		</p:dialog>
+
+
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="99%"
+			closeOnEscape="#{bandejaAdminBean.closable()}"
+			header="Procesar Servicios" modal="true" resizable="false"
+			appendTo="@(body)" rowKey="#{row.id}"
+			visible="#{bandejaAdminBean.visibleNuevoEditar}"
+			closable="#{bandejaAdminBean.closable()}">
+			<h:form id="frmDatos">
+
+				<p:scrollPanel mode="native" style="width:100%;height:535px">
+					<p:dataTable var="row" value="#{bandejaAdminBean.listAbmAdm2}"
+						id="tabAdd" paginator="true" rows="10" first="0"
+						widgetVar="tabAddWidgetVar" tableStyle="width:auto" width="99%"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" selectionMode="single"
+						selection="#{bandejaAdminBean.abmadmin}" rowKey="#{row.id}">
+						<f:facet name="header">LISTA DE SERVICIOS</f:facet>
+
+
+
+						<p:column style="text-align: center;" headerText="ACCIONES"
+							exportable="false">
+							<p:commandLink id="editLink" title="procesar servcio"
+								rendered="#{bandejaAdminBean.isAuthorized(privilegio.ACCION_CREAR)}"
+								actionListener="#{bandejaAdminBean.cerrar(row)}"
+								update=":dlgProcesarId :frmDatos2">
+								<h:graphicImage id="editImage" alt="Modificar"
+									url="/resources/icons/edit.png" styleClass="icon" />
+							</p:commandLink>
+
+							<p:commandButton value="" ajax="false" title="Descargar"
+								rendered="#{(row.adjunto==null)?false:true}"
+								onclick="PrimeFaces.monitorDownload(start, stop);"
+								style="height:25px; width:24px; border:0px none; background:transparent  url('../resources/icons/Button-Download.png;');">
+								<p:fileDownload value="#{bandejaAdminBean.getFile(row.id)}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="NRO ABM"
+							style="text-align: center; width=10%" sortBy="#{row.TAbm.abm}"
+							filterMatchMode="contains" filterBy="#{row.TAbm.abm}">
+							<h:outputText value="#{row.TAbm.abm}" />
+						</p:column>
+
+
+						<p:column headerText="SERVICIO" style="text-align: center;"
+							filterMatchMode="contains" sortBy="#{row.TServicio.descripcion}"
+							filterBy="#{row.TServicio.descripcion}">
+							<h:outputText value="#{row.TServicio.descripcion}" />
+						</p:column>
+
+						<p:column headerText="ESTADO" style="text-align: center;"
+							filterMatchMode="contains" sortBy="#{row.estado}"
+							filterBy="#{row.estado}">
+							<h:outputText value="#{row.estado}" />
+						</p:column>
+
+
+
+						<p:column headerText="ADMINISTRADOR" style="text-align: center; "
+							filterMatchMode="contains" exportable="false"
+							sortBy="#{bandejaAdminBean.columAdmin(row.idUsuario)}"
+							filterBy="#{bandejaAdminBean.columAdmin(row.idUsuario)}">
+							<h:outputText
+								value="#{bandejaAdminBean.columAdmin(row.idUsuario)}" />
+						</p:column>
+
+
+						<p:column headerText="SUPERVISOR" style="text-align: center; "
+							filterMatchMode="contains" exportable="false"
+							sortBy="#{bandejaAdminBean.columSuper(row.idUsuario)}"
+							filterBy="#{bandejaAdminBean.columSuper(row.idUsuario)}">
+							<h:outputText
+								value="#{bandejaAdminBean.columSuper(row.idUsuario)}" />
+						</p:column>
+
+						<p:column headerText="TIPO USUARIO" style="text-align: center;"
+							filterMatchMode="contains" sortBy="#{row.TServicio.tipoUsuario}"
+							filterBy="#{row.TServicio.tipoUsuario}">
+							<h:outputText value="#{row.TServicio.tipoUsuario}" />
+						</p:column>
+						<pre>
+							<p:column headerText="USUARIO ASIGNADO"
+								sortBy="#{row.usuarioAsignado}"
+								filterBy="#{row.usuarioAsignado}" style="white-space: pre-wrap"
+								escape="false" filterMatchMode="contains">
+							<h:outputText value="#{row.usuarioAsignado}" />
+						</p:column>
+							
+						</pre>
+
+						<p:column headerText="CONTRASEÑA" style="text-align: center;"
+							filterMatchMode="contains" sortBy="#{row.contraseña}"
+							filterBy="#{row.contraseña}">
+							<h:outputText value="#{row.contraseña}" />
+						</p:column>
+
+						<p:column headerText="OBSERVACION ADMIN"
+							sortBy="#{row.observacion}" filterBy="#{row.observacion}"
+							filterMatchMode="contains" style="text-align: center;">
+							<h:outputText value="#{row.observacion}" />
+						</p:column>
+
+
+
+						<p:column sortBy="#{row.fecha}" filterBy="#{row.fecha}"
+							exportable="false" filterMatchMode="contains" headerText="FECHA">
+							<h:outputText value="#{row.fecha}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:scrollPanel>
+				<p:panelGrid columns="2">
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						icon="ui-icon-close" oncomplete="#{bandejaAdminBean.closable()}"
+						actionListener="#{bandejaAdminBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+					<h:commandLink id="excel">
+						<p:graphicImage url="/resources/icons/excel.png" />
+						<p:dataExporter type="xls" target="tabAdd" fileName="Registros">
+						</p:dataExporter>
+						
+
+					</h:commandLink>
+
+				</p:panelGrid>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+		<h:form id="frmDetalle">
+
+
+
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>BANDEJA ABM</h1>
+
+
+			Dar click sobre un registro(ABM) para ver los servicios solicitados para este ABM.
+			<br />
+			<p:dataTable var="row" value="#{bandejaAdminBean.listPlat}" id="tab"
+				paginator="true" rows="10" first="0" widgetVar="dlgNuevoEditar2"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				rowStyleClass="#{row.estado == true ? false : null}"
+				selection="#{bandejaAdminBean.pla}" rowKey="#{row.id}">
+				<f:facet name="header">LISTA DE ABM</f:facet>
+
+				<p:ajax event="rowSelect" update=":dlgNuevoEditarId"
+					listener="#{bandejaAdminBean.ediTPlataforma()}" />
+
+				<p:column headerText="ABM" style="text-align: center;" width="30"
+					filterBy="#{row.abm}" filterMatchMode="contains"
+					sortBy="#{row.abm}" filterStyle="width:100%">
+					<h:outputText value="#{row.abm}" />
+				</p:column>
+
+				<p:column headerText="SOLICITANTE" style="text-align: center;"
+					filterBy="#{row.solicitante}" filterMatchMode="contains"
+					width="100">
+					<h:outputText value="#{row.solicitante}" />
+				</p:column>
+
+				<p:column headerText="USUARIO" style="text-align: center;"
+					filterBy="#{row.usuario}" filterMatchMode="contains" width="100">
+					<h:outputText value="#{row.usuario}" />
+				</p:column>
+
+				<p:column headerText="EHUMANO" style="text-align: center;"
+					filterBy="#{row.ehumano}" filterMatchMode="contains" width="50"
+					filterStyle="width:100%">
+					<h:outputText value="#{row.ehumano}" />
+				</p:column>
+				<p:column headerText="CARGO" style="text-align: center;" width="100"
+					filterBy="#{row.cargo}" filterMatchMode="contains">
+					<h:outputText value="#{row.cargo}" />
+				</p:column>
+				<p:column headerText="AREA-SUCURSAL" style="text-align: center;"
+					filterBy="#{row.areasucursal}" filterMatchMode="contains"
+					width="100">
+
+					<h:outputText value="#{row.areasucursal}" />
+				</p:column>
+				<p:column headerText="FECHA FIN" style="text-align: center;"
+					width="60">
+					<h:outputText value="#{row.fechafin}" />
+				</p:column>
+
+				<p:column headerText="OBSERVACION" style="text-align: center;"
+					filterBy="#{row.observacionAbm}" filterMatchMode="contains">
+					<h:outputText value="#{row.observacionAbm}" />
+				</p:column>
+
+				<p:column headerText="ESTADO" style="text-align: center;" width="30"
+					sortBy="#{row.estadoProceso}" filterBy="#{row.estadoProceso}"
+					filterMatchMode="contains" filterStyle="width:80%">
+					<h:outputText value="#{row.estadoProceso}" />
+				</p:column>
+
+				<p:column headerText="FALTANTES" style="text-align: center;"
+					width="20" filterBy="#{row.faltantes}" filterMatchMode="contains"
+					filterStyle="width:100%">
+					<h:outputText value="#{row.faltantes}" />
+				</p:column>
+
+				<p:column sortBy="#{row.fechaenvio}" filterBy="#{row.fechaenvio}"
+					headerText="FECHA ENVIO" width="60" filterStyle="width:100%">
+					<h:outputText value="#{row.fechaenvio}" />
+				</p:column>
+				<p:column sortBy="#{row.fechafinalizado}"
+					filterBy="#{row.fechafinalizado}" headerText="FECHA FINZALIZADO"
+					width="60" filterStyle="width:100%">
+					<h:outputText value="#{row.fechafinalizado}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+			<h:commandLink id="excel">
+				<p:graphicImage url="/resources/icons/excel.png" />
+				<p:dataExporter type="xls" target="tab" fileName="ABM" />
+			</h:commandLink>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

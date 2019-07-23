@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>COMPROBANTES</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+
+							<p:panel>
+								<p:selectOneRadio id="idMasivo"
+									value="#{comprobanteBean.radioSeleccionado}">
+									<f:selectItem itemLabel="Anular Cpte en blanco" itemValue="1" />
+									<f:selectItem itemLabel="Cambiar estado de PC a CA"
+										itemValue="2" />
+									<f:selectItem itemLabel="Cambiar fecha al Cpte" itemValue="3" />
+									<f:selectItem itemLabel="Nivelacion de Bodega" itemValue="4" />
+									<p:ajax event="change" update="iddd, itext, msg"
+										listener="#{comprobanteBean.check()}" />
+								</p:selectOneRadio>
+
+
+							</p:panel>
+
+							<p:panel id="itext">
+								<h:panelGrid columns="2">
+									<h:outputLabel value="FECHA INICIAL: *" styleClass="name"
+										style="text-align:right;"
+										rendered="#{(comprobanteBean.check()==3)? true:false}" />
+									<p:calendar id="calendar1"
+										rendered="#{(comprobanteBean.check()==3)? true:false}"
+										value="#{comprobanteBean.fechaIni}" locale="es"
+										readonlyInput="true" pattern="dd/MM/yyyy"
+										maxdate="#{comprobanteBean.fechaFin}">
+										<p:ajax event="dateSelect" update="itext">
+										</p:ajax>
+									</p:calendar>
+									<h:outputLabel value="FECHA FINAL: *" styleClass="name"
+										style="text-align:right;"
+										rendered="#{(comprobanteBean.check()==3)? true:false}" />
+									<p:calendar id="calendar2"
+										rendered="#{(comprobanteBean.check()==3)? true:false}"
+										value="#{comprobanteBean.fechaFin}" locale="es"
+										readonlyInput="true" pattern="dd/MM/yyyy"
+										mindate="#{comprobanteBean.fechaIni}">
+										<p:ajax event="dateSelect" update="itext" />
+
+									</p:calendar>
+									<p:outputLabel for="itCpte" value="Comprobante:" rendered="#{(comprobanteBean.check()==4)? false:true}"/>
+									<p:inputText id="itCpte" label="Usuario" size="30"
+										rendered="#{(comprobanteBean.check()==3 || comprobanteBean.check()==4)? false:true}"
+										maxlength="5" value="#{comprobanteBean.comprobante}"
+										validatorMessage="El campo Comprobante es obligatorio y no permite caracteres especiales">
+										<f:validateRegex
+											pattern="#{properties.EXPRESION_REGULAR_COMPROBANTE}" />
+									</p:inputText>
+
+									<p:selectOneMenu id="somRol"
+										value="#{comprobanteBean.comprobante}"
+										rendered="#{(comprobanteBean.check()==3)? true:false}"
+										onselect="#{comprobanteBean.comprobante}">
+										<f:selectItems value="#{comprobanteBean.selectItems}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="itSerie" value="Serie:" rendered="#{(comprobanteBean.check()==4)? false:true}"/>
+									<p:inputText id="itSerie" label="Usuario" size="30" rendered="#{(comprobanteBean.check()==4)? false:true}"
+										maxlength="3" value="#{comprobanteBean.serie}"
+										validatorMessage="El campo Serie es obligatorio y no permite caracteres especiales">
+										<f:validateRegex
+											pattern="#{properties.EXPRESION_REGULAR_SERIE}" />
+									</p:inputText>
+
+									<p:outputLabel for="itNumero" value="Numero:" rendered="#{(comprobanteBean.check()==4)? false:true}"/>
+									<p:inputText id="itNumero" label="Usuario" size="30" rendered="#{(comprobanteBean.check()==4)? false:true}"
+										maxlength="10" value="#{comprobanteBean.numero}"
+										validatorMessage="El campo Numero es obligatorio y no permite caracteres especiales">
+										<f:validateRegex
+											pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+									</p:inputText>
+									
+									<p:outputLabel for="itScursal" value="Sucursal:*" rendered="#{(comprobanteBean.check()==4)? true:false}"/>
+									<p:inputText id="itScursal" label="Sucursal" size="30"
+										rendered="#{(comprobanteBean.check()==4)? true:false}"
+										maxlength="9" value="#{comprobanteBean.sucursal}"
+										validatorMessage="El campo Comprobante es obligatorio y no permite caracteres especiales">
+									</p:inputText>
+									
+									<p:outputLabel for="itLocal" value="Local:*" rendered="#{(comprobanteBean.check()==4)? true:false}"/>
+									<p:inputText id="itLocal" label="Local" size="30"
+										rendered="#{(comprobanteBean.check()==4)? true:false}"
+										maxlength="9" value="#{comprobanteBean.local}"
+										validatorMessage="El campo Comprobante es obligatorio y no permite caracteres especiales">
+									</p:inputText>
+									
+									<p:outputLabel for="itDeposito" value="Deposito:*" rendered="#{(comprobanteBean.check()==4)? true:false}" />
+									<p:inputText id="itDeposito" label="Deposito" size="30"
+										rendered="#{(comprobanteBean.check()==4)? true:false}"
+										maxlength="9" value="#{comprobanteBean.deposito}"
+										validatorMessage="El campo Comprobante es obligatorio y no permite caracteres especiales">
+									</p:inputText>
+									
+									<p:outputLabel for="itCodP" value="Codigo Producto:*" rendered="#{(comprobanteBean.check()==4)? true:false}" />
+									<p:inputText id="itCodP" label="Codigo Producto" size="30"
+										rendered="#{(comprobanteBean.check()==4)? true:false}"
+										maxlength="20" value="#{comprobanteBean.codigProducto}"
+										validatorMessage="El campo Comprobante es obligatorio y no permite caracteres especiales">
+									</p:inputText>
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:panel id="iddd">
+								<h:panelGrid columns="1">
+
+									<p:commandButton id="btnAnular" value="Anular"
+										title="#{comprobanteBean.textoAnular()}"
+										rendered="#{(comprobanteBean.check()==1)? true:false}"
+										actionListener="#{comprobanteBean.guardarAnular()}"
+										onclick="PF('statusDialog').show();"
+										oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+									<p:commandButton id="btnCambiarEstdo" value="Cambio Estado"
+										title="#{comprobanteBean.textoCambioEstado()}"
+										rendered="#{(comprobanteBean.check()==2)? true:false}"
+										actionListener="#{comprobanteBean.guardarCambioEstado()}"
+										onclick="PF('statusDialog').show();"
+										oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+									<p:commandButton id="btnCambiarFecha" value="Cambio Fecha"
+										title="#{comprobanteBean.textoCambioFecha()}"
+										rendered="#{(comprobanteBean.check()==3)? true:false}"
+										actionListener="#{comprobanteBean.guardarCambioFecha()}"
+										onclick="PF('statusDialog').show();"
+										oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+									<p:commandButton id="btnVolver" value="Volver Fecha"
+										rendered="#{(comprobanteBean.check()==3)? true:false}"
+										actionListener="#{comprobanteBean.volverFecha()}"
+										onclick="PF('statusDialog').show();"
+										oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+										
+										<p:commandButton id="btnCodP" value="Nivelación de Bodega"
+										rendered="#{(comprobanteBean.check()==4)? true:false}"
+										actionListener="#{comprobanteBean.nivelacionBodega()}"
+										onclick="PF('statusDialog').show();"
+										oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+								</h:panelGrid>
+
+
+
+							</p:panel>
+
+
+
+
+
+						</h:panelGrid>
+					</p:panel>
+
+
+				</h:panelGrid>
+			</center>
+			<p:panel id="msg">
+				<p:outputLabel
+					rendered="#{(comprobanteBean.check()==1)? true:false}"
+					value="#{comprobanteBean.textoAnular()}" />
+				<p:outputLabel
+					rendered="#{(comprobanteBean.check()==2)? true:false}"
+					value="#{comprobanteBean.textoCambioEstado()}" />
+				<p:outputLabel
+					rendered="#{(comprobanteBean.check()==3)? true:false}"
+					value="#{comprobanteBean.textoCambioFecha()}" />
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

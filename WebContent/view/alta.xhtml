@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>ALTA DE USUARIOS</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<h:panelGrid columns="1">
+
+							
+
+							<p:panel>
+								<p:selectOneRadio id="idUsuarioWin"
+									value="#{altaBean.radioSeleccionado}">
+									<f:selectItem itemLabel="Usuario Windows" itemValue="false" />
+									<f:selectItem itemLabel="Usuario Terminal" itemValue="true" />
+								</p:selectOneRadio>
+							</p:panel>
+
+
+
+
+							<p:panel id="basicc" header="Plataformas">
+								<p:selectManyCheckbox id="grid"
+									value="#{altaBean.selectedPlataforma}" layout="grid"
+									columns="4">
+									<f:selectItems value="#{altaBean.selectItemPlataforma}">
+									</f:selectItems>
+									<p:ajax event="change"
+										update="basic2,iddd,basic3,basic4,out1,out2"
+										listener="#{altaBean.chek()}" />
+								</p:selectManyCheckbox>
+							</p:panel>
+
+							<p:panel id="basic2" header="Roles">
+								<p:dataGrid var="car" value="#{altaBean.selectItemPlataforma}"
+									columns="3" layout="grid">
+									<h:panelGrid columns="1">
+										<p:outputLabel for="somRol" value="#{car.label}"
+											rendered="#{altaBean.rendered(car.value)}" />
+										<p:selectOneMenu id="somRol"
+											value="#{altaBean.selectRolSeleccionado}"
+											rendered="#{altaBean.rendered(car.value)}">
+											<f:selectItems
+												value="#{altaBean.obtenerRolesPlataforma(car.value)}" />
+											<p:ajax event="change"
+												listener="#{altaBean.agregarRol(car.value)}" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+								</p:dataGrid>
+							</p:panel>
+
+							<h:panelGrid columns="3">
+
+								<p:outputPanel id="out1">
+									<p:panel id="basic3" header="Members"
+										rendered="#{altaBean.visiblemember}">
+										<p:panelGrid columns="2">
+											<h:outputLabel value="Members:*"
+												rendered="#{altaBean.visiblemember}" />
+											<p:selectCheckboxMenu id="mem"
+												rendered="#{altaBean.visiblemember}"
+												value="#{altaBean.selectedMember}" label="Members"
+												style="width: 188px" filter="true"
+												filterMatchMode="contains" panelStyle="width:250px">
+												<f:selectItems value="#{altaBean.selectMembers}" />
+											</p:selectCheckboxMenu>
+											<p:outputLabel for="itCargo" value="Cargo Terminal:*"
+												rendered="#{altaBean.visiblemember}" />
+											<p:inputText id="itCargo" size="30" maxlength="100"
+												rendered="#{altaBean.visiblemember}"
+												value="#{altaBean.cargo}" label="Cargo"
+												validatorMessage="Para este campo se filtraron los caracteres especiales">
+												<f:validateRegex
+													pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+											</p:inputText>
+											<p:outputLabel for="itArea" value="Area Terminal:*"
+												rendered="#{altaBean.visiblemember}" />
+											<p:inputText id="itArea" size="30" maxlength="100"
+												rendered="#{altaBean.visiblemember}"
+												value="#{altaBean.area}" label="Area"
+												validatorMessage="Para este campo se filtraron los caracteres especiales">
+												<f:validateRegex
+													pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+											</p:inputText>
+											<h:outputLabel value="Fecha Expiracion de la cuenta"
+												styleClass="name" style="text-align:right;"
+												rendered="#{altaBean.visiblemember}" />
+											<p:selectOneRadio id="idfecha"
+												value="#{altaBean.radiofechaSeleccionado}"
+												rendered="#{altaBean.visiblemember}">
+												<f:selectItem itemLabel="Never" itemValue="false" />
+												<f:selectItem itemLabel="Seleccionar Fecha" itemValue="true" />
+												<p:ajax event="change" update="ff,fff" />
+											</p:selectOneRadio>
+
+											<h:panelGrid id="ff" >
+												<h:outputLabel value="Fecha Expiracion:" styleClass="name"
+													style="text-align:right;"
+													rendered="#{altaBean.radiofechaSeleccionado}" />
+												
+											</h:panelGrid>
+											
+											<h:panelGrid id="fff" >
+												
+												<p:calendar id="calendar1"
+													rendered="#{altaBean.radiofechaSeleccionado}"
+													value="#{altaBean.fechaExp}" locale="es"
+													readonlyInput="true" pattern="dd/MM/yyyy">
+												</p:calendar>
+											</h:panelGrid>
+
+										</p:panelGrid>
+									</p:panel>
+
+								</p:outputPanel>
+
+								<p:outputPanel id="out2">
+									<p:panel id="basic4" header="Ciudades Subsidio"
+										rendered="#{altaBean.visibleCiudad}">
+
+
+										<h:panelGrid columns="1">
+											<p:outputLabel for="somCioudad" value="Ciudades"
+												rendered="#{altaBean.visibleCiudad}" />
+											<p:selectOneMenu id="somCioudad"
+												rendered="#{altaBean.visibleCiudad}"
+												value="#{altaBean.selectCiudadSubsidio}">
+												<f:selectItems value="#{altaBean.selectCiudadesSubsidio}" />
+
+											</p:selectOneMenu>
+										</h:panelGrid>
+
+
+
+									</p:panel>
+								</p:outputPanel>
+
+							</h:panelGrid>
+
+
+							<p:panel>
+								<p:selectOneRadio id="idMasivo" value="#{altaBean.radioMasivo}">
+									<f:selectItem itemLabel="Masivo" itemValue="false" />
+									<f:selectItem itemLabel="Simple" itemValue="true" />
+									<p:ajax event="change" update="iddd" />
+								</p:selectOneRadio>
+
+
+							</p:panel>
+							
+							<p:panel id="iddd">
+								<h:panelGrid columns="1">
+									FORMATO ARHIVO .txt: 
+									<pre>
+										<p:outputLabel for="itNombre" style="white-space: pre-wrap"
+											value="#{altaBean.formato()}" escape="false" />
+									</pre>
+
+									<p:outputLabel for="itNombre" value="Usuarios:*"
+										rendered="#{altaBean.radioMasivo}" />
+									<p:inputTextarea id="itNombre" rows="3" cols="80"
+										maxlength="200" rendered="#{altaBean.radioMasivo}"
+										autoResize="false" value="#{altaBean.usuario}" label="Nombre"
+										validatorMessage="Para este campo se filtraron los caracteres especiales">
+										<f:validateRegex pattern="#{properties.ER_LISTA_USUARIOS}">
+										</f:validateRegex>
+									</p:inputTextarea>
+
+									<p:fileUpload fileUploadListener="#{altaBean.handleFileUpload}"
+										rendered="#{!altaBean.radioMasivo}" mode="advanced"
+										auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(txt)$/">
+									</p:fileUpload>
+
+								</h:panelGrid>
+
+
+
+							</p:panel>
+
+
+							<p:commandButton id="btnGuardar" value="Guardar"
+								actionListener="#{altaBean.guardar()}"
+								onclick="PF('statusDialog').show();"
+								oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+
+
+
+
+						</h:panelGrid>
+					</p:panel>
+
+
+				</h:panelGrid>
+			</center>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

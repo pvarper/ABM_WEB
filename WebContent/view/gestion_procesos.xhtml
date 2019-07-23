@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="80%"
+			closeOnEscape="false" header="Ver Procesos" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{procesoBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+
+
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						actionListener="#{procesoBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+				<p:dataTable var="row" value="#{procesoBean.listDetalle}"
+					paginator="true" rows="10" first="0" id="tab"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" selectionMode="single"
+					selection="#{procesoBean.det}" rowKey="#{row.TTop}">
+					<f:facet name="header">LISTA DE PROCESOS</f:facet>
+
+					<p:column headerText="PID" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.pid}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.pid}" />
+					</p:column>
+
+					<p:column headerText="USER" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.user}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.user}" />
+					</p:column>
+
+
+
+					<p:column headerText="COMMAND" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.command}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.command}" />
+					</p:column>
+
+					<p:column headerText="PR" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.pr}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.pr}" />
+					</p:column>
+
+					<p:column headerText="NI" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.ni}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.ni}" />
+					</p:column>
+
+					<p:column headerText="VIRT" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.virt}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.virt}" />
+					</p:column>
+
+					<p:column headerText="RES" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.res}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.res}" />
+					</p:column>
+
+					<p:column headerText="SHR" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.shr}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.shr}" />
+					</p:column>
+
+					<p:column headerText="s" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.s}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.s}" />
+					</p:column>
+
+					<p:column headerText="%CPU" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.cpu}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.cpu}" />
+					</p:column>
+
+					<p:column headerText="MEM" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.mem}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.mem}" />
+					</p:column>
+
+					<p:column headerText="TIME" style="text-align: center;"
+						filterStyle="width:50%" filterBy="#{row.time}"
+						filterMatchMode="contains">
+						<h:outputText value="#{row.time}" />
+					</p:column>
+
+				</p:dataTable>
+				<h:commandLink id="excel">
+					<p:graphicImage url="/resources/icons/excel.png" />
+					<p:dataExporter type="xls" target="tab" fileName="Procesos" />
+				</h:commandLink>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="dlgDhId" widgetVar="dlgDh" width="80%"
+			closeOnEscape="false" header="Ver Uso de Disco" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{procesoBean.visibleNuevoEditarDh}" closable="false">
+			<h:form id="frmDatosDh">
+
+
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="btnSalir2" value="Salir" process="@this"
+						actionListener="#{procesoBean.setVisibleNuevoEditarDh(false)}"
+						update=":dlgDhId">
+						<p:resetInput target="frmDatosDh" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+				<p:dataTable var="row" value="#{procesoBean.listTransaccion}"
+					paginator="true" rows="50" id="tab2"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="50,100,150">
+					<f:facet name="header">LISTA </f:facet>
+
+					<p:column headerText="FILESYSTEM" sortBy="#{row.filesystem}"
+						filterMatchMode="contains" filterBy="#{row.filesystem}">
+						<h:outputText value="#{row.filesystem}" />
+					</p:column>
+
+					<p:column headerText="TYPE" sortBy="#{row.type}"
+						filterMatchMode="contains" filterBy="#{row.type}">
+						<h:outputText value="#{row.type}" />
+					</p:column>
+
+					<p:column headerText="SIZE" sortBy="#{row.size}"
+						filterMatchMode="contains" filterBy="#{row.size}">
+						<h:outputText value="#{row.size}" />
+					</p:column>
+
+					<p:column headerText="USED" sortBy="#{row.used}"
+						filterBy="#{row.used}">
+						<h:outputText value="#{row.used}" />
+					</p:column>
+					<p:column headerText="AVAIL" sortBy="#{row.avail}"
+						filterMatchMode="contains" filterBy="#{row.avail}">
+						<h:outputText value="#{row.avail}" />
+					</p:column>
+					<p:column headerText="USE" sortBy="#{row.use}"
+						filterMatchMode="contains" filterBy="#{row.use}">
+						<h:outputText value="#{row.use}" />
+					</p:column>
+
+					<p:column headerText="MOUNTED ON" sortBy="#{row.mountedon}"
+						filterMatchMode="contains" filterBy="#{row.mountedon}">
+						<h:outputText value="#{row.mountedon}" />
+					</p:column>
+
+				</p:dataTable>
+				<h:commandLink id="excel2">
+					<p:graphicImage url="/resources/icons/excel.png" />
+					<p:dataExporter type="xls" target="tab2" fileName="UsoDisco" />
+				</h:commandLink>
+
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="dlgFreemId" widgetVar="dlgfreem" width="80%"
+			closeOnEscape="false" header="Ver Uso Memoria" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{procesoBean.visibleNuevoEditarFreem}" closable="false">
+			<h:form id="frmDatosFreem">
+
+
+				<h:panelGrid columns="1">
+
+					<p:commandButton id="btnSalir3" value="Salir" process="@this"
+						actionListener="#{procesoBean.setVisibleNuevoEditarFreem(false)}"
+						update=":dlgFreemId">
+						<p:resetInput target="frmDatosFreem" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+				<p:dataTable var="row" value="#{procesoBean.listFreem}"
+					paginator="true" rows="50" id="tab3"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="50,100,150">
+					<f:facet name="header">LISTA</f:facet>
+
+
+
+
+					<p:column headerText="NOMBRE" sortBy="#{row.nombre}"
+						filterMatchMode="contains" filterBy="#{row.nombre}">
+						<h:outputText value="#{row.nombre}" />
+					</p:column>
+
+					<p:column headerText="USED" sortBy="#{row.used}"
+						filterMatchMode="contains" filterBy="#{row.used}">
+						<h:outputText value="#{row.used}" />
+					</p:column>
+
+					<p:column headerText="FREE" sortBy="#{row.free}"
+						filterMatchMode="contains" filterBy="#{row.free}">
+						<h:outputText value="#{row.free}" />
+					</p:column>
+
+					<p:column headerText="SHARED" sortBy="#{row.shared}"
+						filterBy="#{row.shared}">
+						<h:outputText value="#{row.shared}" />
+					</p:column>
+					<p:column headerText="BUFFERS" sortBy="#{row.buffers}"
+						filterMatchMode="contains" filterBy="#{row.buffers}">
+						<h:outputText value="#{row.buffers}" />
+					</p:column>
+					<p:column headerText="CACHED" sortBy="#{row.cached}"
+						filterMatchMode="contains" filterBy="#{row.cached}">
+						<h:outputText value="#{row.cached}" />
+					</p:column>
+
+				</p:dataTable>
+				<h:commandLink id="excel3">
+					<p:graphicImage url="/resources/icons/excel.png" />
+					<p:dataExporter type="xls" target="tab3" fileName="Memoria" />
+				</h:commandLink>
+
+			</h:form>
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>TOP</h1>
+
+			<br />
+			<p:dataTable var="row" value="#{procesoBean.listPlat}" id="tab4"
+				paginator="true" rows="10" first="0"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{procesoBean.pla}" rowKey="#{row.id}">
+				<f:facet name="header">LISTA</f:facet>
+
+				<p:column style="text-align: center;" headerText="ACCIONES"
+					exportable="false">
+					<p:commandLink id="editLink" title="Ver Procesos"
+						actionListener="#{procesoBean.ediTPlataforma(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage id="editImage" alt="Modificar"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="editLink2" title="Ver Uso de Disco"
+						actionListener="#{procesoBean.verDh(row)}"
+						update=":dlgDhId :frmDatosDh">
+						<h:graphicImage id="editImage2" alt="Ver Uso de Disco"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="editLink3" title="Ver Uso de Memoria"
+						actionListener="#{procesoBean.verFreem(row)}"
+						update=":dlgFreemId :frmDatosFreem">
+						<h:graphicImage id="editImage3" alt="Ver Uso de Memoria"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+
+				</p:column>
+
+				<p:column headerText="SERVIDOR" style="text-align: center;"
+					filterBy="#{row.servidor}" filterMatchMode="contains">
+					<h:outputText value="#{row.servidor}" />
+				</p:column>
+
+				<p:column headerText="DESCRIPCION" style="text-align: center;"
+					filterBy="#{row.descripcion}" filterMatchMode="contains">
+					<h:outputText value="#{row.descripcion}" />
+				</p:column>
+
+				<p:column headerText="ADMINISTRADOR" style="text-align: center;"
+					filterBy="#{row.administrador}" filterMatchMode="contains">
+					<h:outputText value="#{row.administrador}" />
+				</p:column>
+
+				<p:column sortBy="#{row.fecha}" filterBy="#{row.fecha}"
+					headerText="FECHA">
+					<h:outputText value="#{row.fecha}" />
+				</p:column>
+
+				<p:column headerText="CPU" style="text-align: center;"
+					filterBy="#{row.cpu}" filterMatchMode="contains">
+					<h:outputText value="#{row.cpu}" />
+				</p:column>
+
+				<p:column headerText="MEMORIA" style="text-align: center;"
+					filterBy="#{row.memoria}" filterMatchMode="contains">
+					<h:outputText value="#{row.memoria}" />
+				</p:column>
+
+				<p:column headerText="SWAP" style="text-align: center;"
+					filterBy="#{row.swap}" filterMatchMode="contains">
+					<h:outputText value="#{row.swap}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+			<h:commandLink id="excel4">
+				<p:graphicImage url="/resources/icons/excel.png" />
+				<p:dataExporter type="xls" target="tab4" fileName="Top" />
+			</h:commandLink>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

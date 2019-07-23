@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>GESTIÓN DE ABM</h1>
+
+			<h:panelGrid columns="2">
+				<h:panelGrid columns="1">
+					<p:panel>
+						<p:outputLabel for="nroABM" value="Nro ABM:" />
+						<p:inputText id="nroABM" label="Nro ABM" size="30"
+							value="#{abmBean.nroABM}"
+							validatorMessage="El campo Serie es obligatorio y no permite caracteres especiales">
+							<f:validateRegex
+								pattern="#{properties.EXPRESION_REGULAR_NUMEROC}" />
+						</p:inputText>
+
+						<p:commandButton id="btnBuscar" value="Buscar" title="Buscar"
+							actionListener="#{abmBean.buscar()}"
+							onclick="PF('statusDialog').show();"
+							oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+
+					</p:panel>
+					<p:panel>
+						<h:outputText value="Cargar Adjuntos : *" />
+						<p:fileUpload fileUploadListener="#{abmBean.handleFileUpload}"
+							onstart="PF('statusDialog').show();"
+							oncomplete="PF('statusDialog').hide();" mode="advanced"
+							auto="true" label="Seleccionar Archivo" sizeLimit="104857600"
+							update="display"
+							invalidSizeMessage="El tamaño es demasiado grande"
+							allowTypes="/(\.|\/)(TXT|txt|csv|xlsx|xls|doc|png|pdf|jpg|docx|jpeg|msg|eml)$/">
+						</p:fileUpload>
+
+						<p:outputPanel id="display">
+							<p:dataList value="#{abmBean.selectedAdjuntos}" ajax="true"
+								var="city" emptyMessage="USTED NO ADJUNTÓ NINGUN ARCHIVO">    
+											#{city}   										  
+       									 </p:dataList>
+						</p:outputPanel>
+					</p:panel>
+
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:outputLabel for="itObs" value="Observaciones:*" />
+					<pre>
+					<p:inputTextarea id="itObs" rows="10" cols="100" maxlength="5000"
+							value="#{abmBean.observacion}" autoResize="false" label="Nombre">
+					</p:inputTextarea>
+					</pre>
+
+				</h:panelGrid>
+
+
+			</h:panelGrid>
+
+			<br />
+
+			<p:dataTable var="row" value="#{abmBean.listPlat}" id="tab"
+				rowKey="#{row.id}">
+
+
+
+				<p:column headerText="ABM" style="text-align: center;" width="30">
+					<h:outputText value="#{row.abm}" />
+				</p:column>
+
+				<p:column headerText="SOLICITANTE" style="text-align: center;"
+					width="100">
+					<h:outputText value="#{row.solicitante}" />
+				</p:column>
+
+				<p:column headerText="USUARIO" style="text-align: center;"
+					width="100">
+					<h:outputText value="#{row.usuario}" />
+				</p:column>
+
+				<p:column headerText="EHUMANO" style="text-align: center;"
+					width="50">
+					<h:outputText value="#{row.ehumano}" />
+				</p:column>
+				<p:column headerText="CARGO" style="text-align: center;" width="100">
+					<h:outputText value="#{row.cargo}" />
+				</p:column>
+				<p:column headerText="AREA-SUCURSAL" style="text-align: center;"
+					width="100">
+
+					<h:outputText value="#{row.areasucursal}" />
+				</p:column>
+				<p:column headerText="FECHA FIN" style="text-align: center;"
+					width="100">
+					<h:outputText value="#{row.fechafin}" />
+				</p:column>
+
+				<p:column headerText="OBSERVACION" style="text-align: center;">
+					<h:outputText value="#{row.observacionAbm}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+			<br />
+			<h:panelGrid columns="3">
+				<p:dataTable var="row" value="#{abmBean.tsaux}" id="tab2"
+					style="width: 65%" rowKey="#{row.id}">
+
+
+
+					<p:column headerText="SERVICIO" style="text-align: center;">
+						<h:outputText value="#{row.descripcion}" />
+					</p:column>
+
+					<p:column headerText="ACCESOS" style="text-align: center;">
+						<h:outputText value="#{row.tipoUsuario}" />
+					</p:column>
+
+					<p:column headerText="CONTRASEÑA" style="text-align: center;">
+						<h:outputText value="#{row.pwd}" />
+					</p:column>
+
+					<p:column headerText="OBSERVACION" style="text-align: center;">
+						<h:outputText value="#{row.observacion}" />
+					</p:column>
+
+
+				</p:dataTable>
+
+
+				<br />
+
+				<p:dataTable var="row" value="#{abmBean.lisadmin2}" id="tab4"
+					style="width: 60%" rowKey="#{row.ci}">
+
+					<p:column style="text-align: center;" headerText="ACCIONES">
+
+						<p:commandLink id="editLink" title="Editar Requerimiento"
+							actionListener="#{abmBean.editAdmin(row)}"
+							update=":dlgNuevoEditarId :frmDatos">
+							<h:graphicImage id="editImage" alt="Modificar"
+								url="/resources/icons/edit.png" styleClass="icon" />
+						</p:commandLink>
+
+						<p:commandLink id="delLink" title="Eliminar Administrador"
+							actionListener="#{abmBean.delAdmin(row)}" update=":frmDetalle">
+							<h:graphicImage id="delImage" alt="Eliminar"
+								url="/resources/icons/delete.png" styleClass="icon" />
+						</p:commandLink>
+
+
+					</p:column>
+
+					<p:column headerText="EMAIL" style="text-align: center;"
+						width="130">
+						<h:outputText value="#{row.correo}" />
+					</p:column>
+
+					<p:column headerText="SERVICIO" style="text-align: center;"
+						width="150">
+						<h:outputText value="#{row.memberOf}" />
+					</p:column>
+
+				</p:dataTable>
+
+
+
+
+
+			</h:panelGrid>
+
+
+
+			<br />
+			<p:commandButton id="btnProce" value="Procesar" title="Procesar"
+				actionListener="#{abmBean.procesar()}"
+				onclick="PF('statusDialog').show();"
+				oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+		</h:form>
+
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="25%"
+			closeOnEscape="false" header="Editar lista" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{abmBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+
+				<h:panelGrid columns="2">
+
+
+					<p:outputLabel for="somRol" value="Administradores:" />
+					<p:selectOneMenu id="somRol" value="#{abmBean.select}"
+						filter="true" filterMatchMode="contains"
+						onselect="#{abmBean.select}">
+						<f:selectItems value="#{abmBean.selectItems}" />
+					</p:selectOneMenu>
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btnAgregar" value="Editar"
+						actionListener="#{abmBean.editar()}"
+						update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+						
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						actionListener="#{abmBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+
+
+				</h:panelGrid>
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

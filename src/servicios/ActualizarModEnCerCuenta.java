@@ -1,0 +1,157 @@
+/**
+ * ActualizarModEnCerCuenta.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package servicios;
+
+public class ActualizarModEnCerCuenta  implements java.io.Serializable {
+    private java.lang.String CUENTA;
+
+    private java.lang.String MODALIDAD;
+
+    public ActualizarModEnCerCuenta() {
+    }
+
+    public ActualizarModEnCerCuenta(
+           java.lang.String CUENTA,
+           java.lang.String MODALIDAD) {
+           this.CUENTA = CUENTA;
+           this.MODALIDAD = MODALIDAD;
+    }
+
+
+    /**
+     * Gets the CUENTA value for this ActualizarModEnCerCuenta.
+     * 
+     * @return CUENTA
+     */
+    public java.lang.String getCUENTA() {
+        return CUENTA;
+    }
+
+
+    /**
+     * Sets the CUENTA value for this ActualizarModEnCerCuenta.
+     * 
+     * @param CUENTA
+     */
+    public void setCUENTA(java.lang.String CUENTA) {
+        this.CUENTA = CUENTA;
+    }
+
+
+    /**
+     * Gets the MODALIDAD value for this ActualizarModEnCerCuenta.
+     * 
+     * @return MODALIDAD
+     */
+    public java.lang.String getMODALIDAD() {
+        return MODALIDAD;
+    }
+
+
+    /**
+     * Sets the MODALIDAD value for this ActualizarModEnCerCuenta.
+     * 
+     * @param MODALIDAD
+     */
+    public void setMODALIDAD(java.lang.String MODALIDAD) {
+        this.MODALIDAD = MODALIDAD;
+    }
+
+    private java.lang.Object __equalsCalc = null;
+    public synchronized boolean equals(java.lang.Object obj) {
+        if (!(obj instanceof ActualizarModEnCerCuenta)) return false;
+        ActualizarModEnCerCuenta other = (ActualizarModEnCerCuenta) obj;
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (__equalsCalc != null) {
+            return (__equalsCalc == obj);
+        }
+        __equalsCalc = obj;
+        boolean _equals;
+        _equals = true && 
+            ((this.CUENTA==null && other.getCUENTA()==null) || 
+             (this.CUENTA!=null &&
+              this.CUENTA.equals(other.getCUENTA()))) &&
+            ((this.MODALIDAD==null && other.getMODALIDAD()==null) || 
+             (this.MODALIDAD!=null &&
+              this.MODALIDAD.equals(other.getMODALIDAD())));
+        __equalsCalc = null;
+        return _equals;
+    }
+
+    private boolean __hashCodeCalc = false;
+    public synchronized int hashCode() {
+        if (__hashCodeCalc) {
+            return 0;
+        }
+        __hashCodeCalc = true;
+        int _hashCode = 1;
+        if (getCUENTA() != null) {
+            _hashCode += getCUENTA().hashCode();
+        }
+        if (getMODALIDAD() != null) {
+            _hashCode += getMODALIDAD().hashCode();
+        }
+        __hashCodeCalc = false;
+        return _hashCode;
+    }
+
+    // Type metadata
+    private static org.apache.axis.description.TypeDesc typeDesc =
+        new org.apache.axis.description.TypeDesc(ActualizarModEnCerCuenta.class, true);
+
+    static {
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://servicios/", "actualizarModEnCerCuenta"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("CUENTA");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "CUENTA"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("MODALIDAD");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "MODALIDAD"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+    }
+
+    /**
+     * Return type metadata object
+     */
+    public static org.apache.axis.description.TypeDesc getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Get Custom Serializer
+     */
+    public static org.apache.axis.encoding.Serializer getSerializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanSerializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+    /**
+     * Get Custom Deserializer
+     */
+    public static org.apache.axis.encoding.Deserializer getDeserializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanDeserializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+}

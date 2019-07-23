@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar"
+			width="350px" closeOnEscape="false" header="Nuevo/editar Plataforma"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{plataformaBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+
+				<h:panelGrid columns="2">
+
+					<p:outputLabel for="itPlaId" rendered="#{plataformaBean.edit}"
+						value="Id Plataforma:" />
+					<p:inputText id="itPlaId" rendered="#{plataformaBean.edit}"
+						disabled="true" size="30" value="#{plataformaBean.pla.id}" />
+
+					<p:outputLabel for="itNombre" value="Nombre:" />
+					<p:inputText id="itNombre" size="30" maxlength="50"
+						value="#{plataformaBean.pla.nombre}" label="Nombre"
+						validatorMessage="Para este campo se filtraron los caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+					</p:inputText>
+
+
+
+					<p:outputLabel for="itMenu" value="Descripción: " />
+					<p:inputText id="itMenu" size="30" maxlength="50"
+						value="#{plataformaBean.pla.descripcion}" label="Descripción">
+					</p:inputText>
+
+				</h:panelGrid>
+
+					<p:selectOneRadio id="idMasivo" value="#{plataformaBean.radioAlta}">
+						
+						<f:selectItem itemLabel="ALTA DE USUARIOS" itemValue="2" />
+						<f:selectItem itemLabel="BAJA DE USUARIOS" itemValue="3" />
+						
+					</p:selectOneRadio>
+
+
+				<h:panelGrid columns="3">
+
+					<p:commandButton id="btnGuardar" value="Guardar"
+						actionListener="#{plataformaBean.guardar()}"
+						update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+
+
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						actionListener="#{plataformaBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>GESTIÓN DE PLATAFORMAS</h1>
+
+			<p:commandButton value="Nuevo" icon="ui-icon-document"
+				rendered="#{plataformaBean.isAuthorized(privilegio.ACCION_CREAR)}"
+				style="width:140px;"
+				actionListener="#{plataformaBean.newplauerimiento()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Editar" icon="ui-icon-pencil"
+				rendered="#{plataformaBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+				style="width:140px;"
+				actionListener="#{plataformaBean.ediTPlataforma()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Eliminar" icon="ui-icon-trash"
+				style="width:140px;"
+				rendered="#{plataformaBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+				actionListener="#{plataformaBean.delete()}" update=":frmDetalle">
+				<p:confirm header="Confirmación"
+					message="¿Esta seguro que desea eliminar este registro?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+			<br />
+			<p:dataTable var="row" value="#{plataformaBean.listPlat}" id="tab"
+				paginator="true" rows="10" first="0"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{plataformaBean.pla}" rowKey="#{row.id}">
+				<f:facet name="header">LISTA DE PLATAFORMAS</f:facet>
+
+				<p:column style="text-align: center;" headerText="ACCIONES">
+					<p:commandLink id="editLink" title="Editar Requerimiento"
+						rendered="#{plataformaBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+						actionListener="#{plataformaBean.ediTPlataforma(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage id="editImage" alt="Modificar"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="deleteLink" title="Eliminar Requerimiento"
+						rendered="#{plataformaBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+						actionListener="#{plataformaBean.delete(row)}"
+						update=":frmDetalle">
+						<h:graphicImage id="deleteImage" alt="Eliminar"
+							url="/resources/icons/delete.png" styleClass="icon" />
+						<p:confirm header="Confirmación"
+							message="¿Esta seguro que desea eliminar este registro?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+				</p:column>
+
+				<p:column headerText="NOMBRE" style="text-align: center;"
+					filterBy="#{row.nombre}" filterMatchMode="contains">
+					<h:outputText value="#{row.nombre}" />
+				</p:column>
+
+				<p:column headerText="DESCRIPCION" style="text-align: center;"
+					filterBy="#{row.descripcion}" filterMatchMode="contains">
+					<h:outputText value="#{row.descripcion}" />
+				</p:column>
+
+				<p:column headerText="USO" style="text-align: center;"
+					filterBy="#{row.uso}" filterMatchMode="contains">
+					<h:outputText value="#{row.uso}" />
+				</p:column>
+
+
+
+
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

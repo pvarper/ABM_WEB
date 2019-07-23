@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+
+	<ui:define name="content">
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar"
+			width="550px" closeOnEscape="false" header="Nuevo/editar Usuario"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{usuarioAnitaBean.visibleNuevoEditar}" closable="false">
+
+			<h:form id="frmDatos">
+				<p:messages showDetail="true" showSummary="false" autoUpdate="true"
+					closable="true" />
+				<h:panelGrid columns="2">
+
+					<p:outputLabel for="itUsuarioId"
+						rendered="#{usuarioAnitaBean.edit}" value="Id usuario:" />
+					<p:inputText id="itUsuarioId" rendered="#{usuarioAnitaBean.edit}"
+						disabled="true" maxlength="30" size="30"
+						value="#{usuarioAnitaBean.user.idUsuario}">
+
+					</p:inputText>
+
+
+
+					<p:outputLabel for="itRegional" value="Regional:" />
+					<p:inputText id="itRegional" label="Regional" size="60"
+						maxlength="100" value="#{usuarioAnitaBean.user.regional}"
+						validatorMessage="El campo Regional es obligatorio y no permite caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+					</p:inputText>
+
+					<p:outputLabel for="itCargo" value="Cargo:" />
+					<p:inputText id="itCargo" label="Cargo" size="60" maxlength="100"
+						value="#{usuarioAnitaBean.user.cargo}"
+						validatorMessage="El campo Cargo es obligatorio y no permite caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+					</p:inputText>
+
+					<p:outputLabel for="itNombres" value="Nombres:" />
+					<p:inputText id="itNombres" label="Cargo" size="60" maxlength="100"
+						value="#{usuarioAnitaBean.user.nombres}"
+						validatorMessage="El campo Nombres es obligatorio y no permite caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+					</p:inputText>
+
+					<p:outputLabel for="itUsuario" value="Login:" />
+					<p:inputText id="itUsuario" label="Login" size="60" maxlength="30"
+						value="#{usuarioAnitaBean.user.usrLogin}"
+						validatorMessage="El campo Usuario es obligatorio y no permite caracteres especiales">
+						<f:validateRegex pattern="#{properties.EXPRECION_REGULAR_USUARIO}" />
+					</p:inputText>
+
+					<p:outputLabel for="itCI" value="CI:" />
+					<p:inputText id="itCI" label="CI" size="60" maxlength="100"
+						value="#{usuarioAnitaBean.user.numeroci}"
+						>
+						
+					</p:inputText>
+
+
+
+					<p:outputLabel for="itEH" value="EHUMANO:" />
+					<p:inputText id="itEH" label="EHUMANO" size="60" maxlength="100"
+						value="#{usuarioAnitaBean.user.ehumano}"
+						>
+						
+					</p:inputText>
+
+					<p:outputLabel for="itTelefono" value="TELEFONO:" />
+					<p:inputText id="itTelefono" label="TELEFONO" size="60"
+						maxlength="100" value="#{usuarioAnitaBean.user.telefono}">
+
+					</p:inputText>
+
+					<h:outputText value="Estado" />
+					<p:selectOneMenu id="selectEstado"
+						value="#{usuarioAnitaBean.selectEstado}" style="width: 188px; "
+						onselect="#{usuarioAnitaBean.selectEstado}">
+						<f:attribute name="optionClasses" value="option1, option2" />
+						<f:selectItems value="#{usuarioAnitaBean.selectEstados}" />
+					</p:selectOneMenu>
+
+					<p:commandButton id="btnGuardar" value="Guardar"
+						icon="ui-icon-disk"
+						actionListener="#{usuarioAnitaBean.saveUser()}"
+						update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{usuarioAnitaBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId :frmDetalle">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+
+				</h:panelGrid>
+
+			</h:form>
+			<br />
+		</p:dialog>
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>GESTIÓN DE USUARIOS</h1>
+
+			<p:commandButton value="Nuevo" icon="ui-icon-document"
+				rendered="#{usuarioAnitaBean.isAuthorized(privilegio.ACCION_CREAR)}"
+				style="width:140px;" actionListener="#{usuarioAnitaBean.newUser()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Editar" icon="ui-icon-pencil"
+				rendered="#{usuarioAnitaBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+				style="width:140px;"
+				actionListener="#{usuarioAnitaBean.editRoleUser()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Eliminar" icon="ui-icon-trash"
+				style="width:140px;"
+				rendered="#{usuarioAnitaBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+				actionListener="#{usuarioAnitaBean.deleteRoleUser()}"
+				update=":frmDetalle">
+				<p:confirm header="Confirmación"
+					message="¿Está seguro que desea eliminar este registro?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+			<br />
+			<p:dataTable var="row" value="#{usuarioAnitaBean.listUser}"
+				paginator="true" rows="10" first="0" id="tab"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{usuarioAnitaBean.user}" rowKey="#{row.idUsuario}">
+
+				<f:facet name="header">LISTA DE USUARIOS</f:facet>
+
+				<p:column headerText="ACCIONES" style="text-align: center;" exportable="false">
+
+					<p:commandLink id="editLink" title="Editar Usuario"
+						rendered="#{(row.usrLogin != 'admin') and (usuarioAnitaBean.isAuthorized(privilegio.ACCION_MODIFICAR))}"
+						actionListener="#{usuarioAnitaBean.editRoleUser(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage alt="Modificar" url="/resources/icons/edit.png"
+							styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="deleteLink" title="Eliminar Usuario"
+						rendered="#{(row.usrLogin != 'admin') and (usuarioAnitaBean.isAuthorized(privilegio.ACCION_ELIMINAR))}"
+						actionListener="#{usuarioAnitaBean.deleteRoleUser(row)}"
+						update=":frmDetalle">
+						<h:graphicImage alt="Eliminar" url="/resources/icons/delete.png" />
+						<p:confirm header="Confirmación"
+							message="¿Está seguro que desea eliminar este registro?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+				</p:column>
+
+				<p:column headerText="REGIONAL" filterBy="#{row.regional}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.regional}" />
+				</p:column>
+
+				<p:column headerText="CARGO" filterBy="#{row.cargo}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.cargo}" />
+				</p:column>
+
+				<p:column headerText="NOMBRES" filterBy="#{row.nombres}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.nombres}" />
+				</p:column>
+
+				<p:column headerText="LOGIN" filterBy="#{row.usrLogin}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.usrLogin}" />
+				</p:column>
+
+				<p:column headerText="CI" filterBy="#{row.numeroci}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.numeroci}" />
+				</p:column>
+
+				<p:column headerText="EHUMANO" filterBy="#{row.ehumano}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.ehumano}" />
+				</p:column>
+
+				<p:column headerText="TELEFONO" filterBy="#{row.telefono}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.telefono}" />
+				</p:column>
+				<p:column headerText="ESTADO" filterBy="#{row.estado}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.estado}" />
+				</p:column>
+
+
+			</p:dataTable>
+			
+			<h:commandLink id="excel">
+				<p:graphicImage url="/resources/icons/excel.png" />
+				<p:dataExporter type="xls" target="tab" fileName="Usuarios" />
+			</h:commandLink>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<center>
+
+				<h1>REPLICAR</h1>
+
+				<h:panelGrid columns="1">
+					<p:panel>
+						<p:outputLabel for="namePro" value="Nombre Proyecto:*" />
+						<p:inputText id="namePro" size="30" maxlength="100"
+							value="#{replicarBean.nombreProyecto}" label="Cargo">
+						</p:inputText>
+						<h:panelGrid columns="1">
+
+							<p:panel id="basic3" header="Terminales">
+								<p:panelGrid columns="2">
+									<h:outputLabel value="Terminales:*" />
+									<p:selectManyCheckbox id="mem"
+										value="#{replicarBean.selectedMember}" label="TERMINALES"
+										layout="grid" columns="5">
+										<f:selectItems value="#{replicarBean.selectMembers}" />
+									</p:selectManyCheckbox>
+
+
+
+								</p:panelGrid>
+
+							</p:panel>
+
+							<p:panel>
+
+								<p:selectOneRadio id="idMasivo"
+									value="#{replicarBean.radioSeleccionado}">
+									<f:selectItem itemLabel="Replicar BCCS" itemValue="1" />
+									<f:selectItem itemLabel="Replicar BBD" itemValue="2" />
+									<f:selectItem itemLabel="Replicar SVA" itemValue="3" />
+									<p:ajax event="change" listener="#{replicarBean.check()}"
+										update="direc" />
+								</p:selectOneRadio>
+
+
+								<p:panel id="direc">
+									<p:outputLabel for="itDirBccs" value="Directorio BCCS:*"
+										rendered="#{(replicarBean.check()==1)? true:false}" />
+									<p:inputText id="itDirBccs" size="30" maxlength="100"
+										rendered="#{(replicarBean.check()==1)? true:false}"
+										readonly="true" value="#{replicarBean.directorio_bccs}"
+										label="Cargo">
+									</p:inputText>
+									<p:outputLabel for="itDirBBD" value="Directorio BBD:*"
+										rendered="#{(replicarBean.check()==2)? true:false}" />
+									<p:inputText id="itDirBBD" size="30" maxlength="100"
+										rendered="#{(replicarBean.check()==2)? true:false}"
+										readonly="true" value="#{replicarBean.directorio_bbd}"
+										label="Cargo">
+									</p:inputText>
+									<p:outputLabel for="itDirSVA" value="Directorio SVA:*"
+										rendered="#{(replicarBean.check()==3)? true:false}" />
+									<p:inputText id="itDirSVA" size="30" maxlength="100"
+										rendered="#{(replicarBean.check()==3)? true:false}"
+										readonly="true" value="#{replicarBean.directorio_sva}"
+										label="Cargo">
+									</p:inputText>
+								</p:panel>
+
+
+							</p:panel>
+
+							<p:panel id="iddd">
+								<h:panelGrid columns="1">
+									archivo .dll y .pnl: 
+									<p:fileUpload
+										fileUploadListener="#{replicarBean.handleFileUpload}"
+										mode="advanced" auto="true" sizeLimit="10000000"
+										update="display" allowTypes="/(\.|\/)(dll|pnl)$/">
+									</p:fileUpload>
+									<p:outputPanel id="display">
+										<p:dataList value="#{replicarBean.selectedAdjuntos}"
+											ajax="true" var="city"
+											emptyMessage="USTED NO ADJUNTÓ NINGUN ARCHIVO">    
+											#{city}   										  
+       									 </p:dataList>
+									</p:outputPanel>
+
+								</h:panelGrid>
+
+								<p:commandButton id="btnGuardar" value="Guardar"
+									actionListener="#{replicarBean.guardar()}"
+									onclick="PF('statusDialog').show();"
+									oncomplete="PF('statusDialog').hide();" update=":frmDetalle" />
+
+							</p:panel>
+
+
+
+
+						</h:panelGrid>
+					</p:panel>
+
+
+				</h:panelGrid>
+			</center>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

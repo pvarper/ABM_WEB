@@ -1,0 +1,703 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+
+	<ui:define name="content">
+
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="67%"
+			closeOnEscape="false" header="Nuevo/editar Reporte de Incidencia"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{reporteInBean.visibleNuevoEditar}" closable="false">
+
+			<h:form id="frmDatos">
+				<p:scrollPanel mode="native" style="width:820px;height:400px">
+					<p:accordionPanel style="width:800px;height:600px">
+
+						<p:tab id="tab" title="#{reporteInBean.listaTitulos.get(0)}">
+
+							<h:panelGrid columns="2">
+								<p:outputLabel for="itIncidente" value="Incidente:*" />
+								<p:inputTextarea id="itIncidente" rows="3" cols="85"
+									maxlength="2000" autoResize="false"
+									value="#{reporteInBean.datosGenerales.incidente}"
+									label="Incidente">
+
+								</p:inputTextarea>
+							</h:panelGrid>
+
+							<h:panelGrid columns="4">
+
+								<p:outputLabel for="itNombre" value="Nombre:*" />
+								<p:inputText id="itNombre" label="Nombre" size="30"
+									maxlength="100" value="#{reporteInBean.user.nombre}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itIdTicket" value="Id Ticket:*" />
+								<p:inputText id="itIdTicket" label="Ticket" size="30"
+									maxlength="20" value="#{reporteInBean.datosGenerales.idticket}">
+
+								</p:inputText>
+
+								<h:outputLabel value="Fecha Inicial: *" styleClass="name"
+									style="text-align:right;" />
+								<p:calendar id="calendar1" size="30"
+									value="#{reporteInBean.fechaInicial}" locale="es"
+									readonlyInput="true" pattern="dd/MM/yyyy HH:mm:ss"
+									maxdate="#{reporteInBean.fechaFinal}">
+
+
+								</p:calendar>
+								<h:outputLabel value="Fecha Final: *" styleClass="name"
+									style="text-align:right;" />
+								<p:calendar id="calendar2" size="30"
+									value="#{reporteInBean.fechaFinal}" locale="es"
+									readonlyInput="true" pattern="dd/MM/yyyy HH:mm:ss">
+
+
+								</p:calendar>
+
+								<p:outputLabel for="itAfectacion" value="Afectación:*" />
+								<p:inputText id="itAfectacion" label="Afectación" size="30"
+									maxlength="100"
+									value="#{reporteInBean.datosGenerales.afectacion}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itBuAfectada" value="BU Afectada:*" />
+								<p:inputText id="itBuAfectada" label="BuAfectada" size="30"
+									maxlength="100"
+									value="#{reporteInBean.datosGenerales.buAfectada}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itCausa" value="Causa:*" />
+								<p:inputText id="itCausa" label="Causa" size="30"
+									maxlength="100" value="#{reporteInBean.datosGenerales.causa}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itreporta" value="Reporta:*" />
+								<p:inputText id="itreporta" label="Reporta" size="30"
+									maxlength="100" value="#{reporteInBean.user.reporta}">
+
+								</p:inputText>
+
+							</h:panelGrid>
+						</p:tab>
+
+						<p:tab id="tab2" title="#{reporteInBean.listaTitulos.get(1)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itNombreapp" value="APP:*" />
+								<p:inputText id="itNombreapp" label="APP" size="30"
+									maxlength="90" value="#{reporteInBean.appInvolucradas.nombre}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itAdministrador" value="Administrador:*" />
+								<p:inputText id="itAdministrador" label="Causa" size="30"
+									maxlength="90"
+									value="#{reporteInBean.appInvolucradas.administrador}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itSubArea" value="SubÁrea:*" />
+								<p:inputText id="itSubArea" label="SubArea" size="30"
+									maxlength="90" value="#{reporteInBean.appInvolucradas.subarea}">
+
+								</p:inputText>
+								<p:commandButton id="btnAddApp" value="Agregar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarAppInvolucradas()}"
+									update="tablaApp" />
+
+
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaApp" var="row"
+								value="#{reporteInBean.listaAppInvolucradas}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES" style="text-align: center;">
+									<p:commandLink id="deleteLinkApp" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarAppInvolucradas(row.id)}"
+										update="tablaApp">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+								</p:column>
+
+
+								<p:column headerText="APP / Sistema / Plataforma /NE">
+									<h:outputText value="#{row.nombre}" />
+								</p:column>
+								<p:column headerText="Administrador">
+									<h:outputText value="#{row.administrador}" />
+								</p:column>
+								<p:column headerText="Sub área SA">
+									<h:outputText value="#{row.subarea}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:tab>
+
+						<p:tab id="tab3" title="#{reporteInBean.listaTitulos.get(2)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itNombreParti" value="Nombre:*" />
+								<p:inputText id="itNombreParti" label="Nombre" size="30"
+									maxlength="90" value="#{reporteInBean.participantes.nombre}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itAreapar" value="Area:*" />
+								<p:inputText id="itAreapar" label="Area" size="30"
+									maxlength="90" value="#{reporteInBean.participantes.area}">
+
+								</p:inputText>
+
+								<p:outputLabel for="itCargopar" value="Cargo:*" />
+								<p:inputText id="itCargopar" label="Cargo" size="30"
+									maxlength="90" value="#{reporteInBean.participantes.cargo}">
+
+								</p:inputText>
+								<p:commandButton id="btnAddPar" value="Guardar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarParticipantes()}"
+									update="tablaPar" />
+
+
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaPar" var="row"
+								value="#{reporteInBean.listaParticipantes}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES" style="text-align: center;">
+									<p:commandLink id="deleteLinkPar" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarParticipantes(row.id)}"
+										update="tablaPar">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<h:outputText value="#{row.nombre}" />
+								</p:column>
+								<p:column headerText="Area">
+									<h:outputText value="#{row.area}" />
+								</p:column>
+								<p:column headerText="Cargo">
+									<h:outputText value="#{row.cargo}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:tab>
+
+						<p:tab id="tab4" title="#{reporteInBean.listaTitulos.get(3)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itNombreAnte" value="Nombre:*" />
+								<p:inputText id="itNombreAnte" label="Nombre" size="30"
+									maxlength="90" value="#{reporteInBean.antecedentes.nombre}">
+
+								</p:inputText>
+
+								<h:outputLabel value="Fecha: *" styleClass="name"
+									style="text-align:right;" />
+								<p:calendar id="calendar3" size="30"
+									value="#{reporteInBean.fechaAntecedente}" locale="es"
+									readonlyInput="true" pattern="dd/MM/yyyy">
+
+
+								</p:calendar>
+
+								<p:commandButton id="btnAddAnte" value="Guardar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarAntecedente()}"
+									update="tablaAnt" />
+
+
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaAnt" var="row"
+								value="#{reporteInBean.listaAntecedentes}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES" style="text-align: center;">
+
+									<p:commandLink id="editLinkAnt" title="Editar Usuario"
+										actionListener="#{reporteInBean.setVisibleAgregarHoraAnt(true)}"
+                        				update=":dlgAgregarHoraAntId :frmDatosHoraAnt">
+										<h:graphicImage alt="Modificar"
+											url="/resources/icons/edit.png" styleClass="icon" />
+									</p:commandLink>
+
+
+									<p:commandLink id="deleteLinkAnt" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarAntecedentes(row.id)}"
+										update="tablaAnt">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<h:outputText value="#{row.nombre}" />
+								</p:column>
+								<p:column headerText="Fecha">
+									<h:outputText value="#{row.fecha}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:tab>
+
+						<p:tab id="tab5" title="#{reporteInBean.listaTitulos.get(4)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itNombreCro" value="Nombre:*" />
+								<p:inputText id="itNombreCro" label="Nombre" size="30"
+									maxlength="90" value="#{reporteInBean.cronologia.nombre}">
+
+								</p:inputText>
+
+								<h:outputLabel value="Fecha: *" styleClass="name"
+									style="text-align:right;" />
+								<p:calendar id="calendar4" size="30"
+									value="#{reporteInBean.fechaCronologia}" locale="es"
+									readonlyInput="true" pattern="dd/MM/yyyy">
+
+
+								</p:calendar>
+
+								<p:commandButton id="btnAddCron" value="Guardar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarCronologia()}"
+									update="tablaCro" />
+
+
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaCro" var="row"
+								value="#{reporteInBean.listaCronologia}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES"
+									style="text-align: center;width:10%;">
+
+									<p:commandLink id="editLinkCro" title="Editar Usuario"
+										rendered="#{(reporteInBean.isAuthorized(privilegio.ACCION_MODIFICAR))}">
+										<h:graphicImage alt="Modificar"
+											url="/resources/icons/edit.png" styleClass="icon" />
+									</p:commandLink>
+
+									<p:commandLink id="deleteLinkCro" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarCronologia(row.id)}"
+										update="tablaCro">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<h:outputText value="#{row.nombre}" />
+								</p:column>
+								<p:column headerText="Fecha">
+									<h:outputText value="#{row.fecha}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:tab>
+
+
+						<p:tab id="tab6" title="#{reporteInBean.listaTitulos.get(5)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itDetalleCausa"
+									value="Causa del Incidente:*" />
+								<p:inputTextarea id="itDetalleCausa" rows="3" cols="85"
+									maxlength="2000" autoResize="false"
+									value="#{reporteInBean.datosGenerales.detallecausa}"
+									label="detalle">
+
+								</p:inputTextarea>
+							</h:panelGrid>
+						</p:tab>
+
+						<p:tab id="tab7" title="#{reporteInBean.listaTitulos.get(6)}">
+
+							<h:panelGrid columns="4">
+								<p:outputLabel for="itSolucion" value="Solución:*" />
+								<p:inputTextarea id="itSolucion" rows="3" cols="85"
+									maxlength="2000" autoResize="false"
+									value="#{reporteInBean.datosGenerales.solucion}"
+									label="Solucion">
+								</p:inputTextarea>
+							</h:panelGrid>
+						</p:tab>
+
+						<p:tab id="tab8" title="#{reporteInBean.listaTitulos.get(7)}">
+
+							<h:panelGrid columns="2">
+
+
+								<p:outputLabel for="itPlanTarea" value="Tarea:*" />
+								<p:inputTextarea id="itPlanTarea" rows="3" cols="85" autoResize="false"
+									maxlength="2000" value="#{reporteInBean.planAccion.tarea}"
+									label="Plan Accion">
+
+								</p:inputTextarea>
+
+								<p:outputLabel for="itPlanRespo" value="Responsable:*" />
+								<p:inputText id="itPlanRespo" label="Causa" size="30"
+									maxlength="90" value="#{reporteInBean.planAccion.responsable}">
+
+								</p:inputText>
+								<h:outputLabel value="Fecha: *" styleClass="name"
+									style="text-align:right;" />
+								<p:calendar id="calendar6" size="30"
+									value="#{reporteInBean.fechaPlanAccion}" locale="es"
+									readonlyInput="true" pattern="dd/MM/yyyy">
+								</p:calendar>
+
+								<p:commandButton id="btnAddPlanAccion" value="Guardar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarPlanAccion()}"
+									update="tablaPlanAccion" />
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaPlanAccion" var="row"
+								value="#{reporteInBean.listaPlanAccion}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES"
+									style="text-align: center;width:10%;">
+
+									<p:commandLink id="deleteLinkPlanAc" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarPlanAccion(row.id)}"
+										update="tablaPlanAccion">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+								</p:column>
+
+								<p:column headerText="TAREA" style="text-align: left;width:40%;">
+									<h:outputText value="#{row.tarea}" />
+								</p:column>
+								<p:column headerText="RESPONSABLE">
+									<h:outputText value="#{row.responsable}" />
+								</p:column>
+								<p:column headerText="FECHA">
+									<h:outputText value="#{row.fecha}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</p:tab>
+
+						<p:tab id="tab9" title="#{reporteInBean.listaTitulos.get(8)}">
+
+							<h:panelGrid columns="2">
+
+								<p:outputLabel for="itPuntoMejora" value="Punto de Mejora:*" />
+								<p:inputTextarea id="itPuntoMejora" rows="3" cols="85"
+									maxlength="2000" autoResize="false"
+									value="#{reporteInBean.puntosMejora.descripcion}"
+									label="Punto Mejora">
+
+								</p:inputTextarea>
+
+								<p:outputLabel for="itPuntoRespo"
+									value="Responsable de Mejora:*" />
+								<p:inputText id="itPuntoRespo" label="Causa" size="30"
+									maxlength="90"
+									value="#{reporteInBean.puntosMejora.responsable}">
+
+								</p:inputText>
+
+
+								<p:commandButton id="btnAddPuntoMejora" value="Guardar"
+									icon="ui-icon-disk"
+									actionListener="#{reporteInBean.agregarPuntosMejora()}"
+									update="tablaPuntoMejora" />
+
+
+							</h:panelGrid>
+
+
+							<p:dataTable id="tablaPuntoMejora" var="row"
+								value="#{reporteInBean.listaPuntoMejora}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES"
+									style="text-align: center;width:10%;">
+									<p:commandLink id="deleteLinkPunt" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarPuntosMejora(row.id)}"
+										update="tablaPuntoMejora">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+								</p:column>
+
+
+
+								<p:column headerText="PUNTOS DE MEJORA"
+									style="text-align: left;width:60%;">
+									<h:outputText value="#{row.descripcion}" />
+								</p:column>
+								<p:column headerText="RESPONSABLE DE MEJORA">
+									<h:outputText value="#{row.responsable}" />
+								</p:column>
+
+
+							</p:dataTable>
+
+						</p:tab>
+
+
+
+					</p:accordionPanel>
+				</p:scrollPanel>
+
+
+
+
+				<h:panelGrid columns="2">
+					<p:commandButton id="btnGuardar" value="Guardar"
+						icon="ui-icon-disk" actionListener="#{reporteInBean.saveUser()}"
+						update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+
+					<p:commandButton id="btnSalir" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{reporteInBean.setVisibleNuevoEditar(false)}"
+						update=":dlgNuevoEditarId">
+						<p:resetInput target="frmDatos" />
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+
+			<br />
+		</p:dialog>
+
+		<p:dialog id="dlgAgregarHoraAntId" widgetVar="dlgAgregarHoraAnt"
+			width="350px" closeOnEscape="false" header="Agregar Horas"
+			modal="true" resizable="false" appendTo="@(body)"
+			visible="#{reporteInBean.visibleAgregarHoraAnt}" closable="false">
+
+			<h:form id="frmDatosHoraAnt">
+				<p:messages showDetail="true" showSummary="false" autoUpdate="true"
+					closable="true" />
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="Hora: *" styleClass="name"
+						style="text-align:right;" />
+					<p:calendar id="calendarHoraAnt" size="30"
+						value="#{reporteInBean.horaAnt}" locale="es" readonlyInput="true"
+						pattern="HH:mm:ss">
+					</p:calendar>
+
+					<p:outputLabel for="itdescHoraAnt" value="Descripción:" />
+					<p:inputText id="itdescHoraAnt" label="Usuario" size="30"
+						maxlength="30" value="#{reporteInBean.horaAntecedente.nombre}">
+					</p:inputText>
+
+					<p:commandButton id="btnGuardarHoraAnt" value="Guardar"
+						icon="ui-icon-disk" actionListener="#{reporteInBean.agregarAntecedente()}"
+						update=":dlgAgregarHoraAntId :frmDatosHoraAnt " />
+
+					<p:commandButton id="btnSalirHoraAnt" value="Salir" process="@this"
+						icon="ui-icon-close"
+						actionListener="#{reporteInBean.setVisibleAgregarHoraAnt(false)}"
+						update=":dlgAgregarHoraAntId">
+						<p:resetInput target="frmDatosHoraAnt " />
+					</p:commandButton>
+
+				</h:panelGrid>
+				
+				
+							<p:dataTable id="tablaHoraAnt" var="row"
+								value="#{reporteInBean.listaHoraAntecedentes}" paginator="true"
+								rows="10" emptyMessage="NO TIENE DATOS PARA MOSTRAR"
+								selectionMode="single" rowKey="#{row.id}">
+
+								<p:column headerText="ACCIONES"
+									style="text-align: center;width:10%;">
+									<p:commandLink id="deleteLinkHoraAnt" title="Eliminar App"
+										actionListener="#{reporteInBean.eliminarPuntosMejora(row.id)}"
+										update="tablaHoraAnt">
+										<h:graphicImage alt="Eliminar"
+											url="/resources/icons/delete.png" />
+										<p:confirm header="Confirmación"
+											message="¿Está seguro que desea eliminar este registro?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+								</p:column>
+
+
+
+								<p:column headerText="HORA"
+									style="text-align: left;width:60%;">
+									<h:outputText value="#{row.hora}" />
+								</p:column>
+								<p:column headerText="DESCRIPCION">
+									<h:outputText value="#{row.nombre}" />
+								</p:column>
+
+
+							</p:dataTable>
+					
+					
+			</h:form>
+			<br />
+		</p:dialog>
+
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>REPORTE DE INCIDENCIAS</h1>
+
+			<p:commandButton value="Nuevo" icon="ui-icon-document"
+				rendered="#{reporteInBean.isAuthorized(privilegio.ACCION_CREAR)}"
+				style="width:140px;" actionListener="#{reporteInBean.newUser()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Editar" icon="ui-icon-pencil"
+				rendered="#{reporteInBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+				style="width:140px;"
+				actionListener="#{reporteInBean.editRoleUser()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Eliminar" icon="ui-icon-trash"
+				style="width:140px;"
+				rendered="#{reporteInBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+				actionListener="#{reporteInBean.deleteRoleUser()}"
+				update=":frmDetalle">
+				<p:confirm header="Confirmación"
+					message="¿Está seguro que desea eliminar este registro?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+			<br />
+			<p:dataTable var="row" value="#{reporteInBean.listUser}"
+				paginator="true" rows="10" first="0"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{reporteInBean.user}" rowKey="#{row.id}">
+
+				<f:facet name="header">LISTA DE REPORTES DE INCIDENCIA</f:facet>
+
+				<p:column headerText="ACCIONES" style="text-align: center;">
+
+					<p:commandLink id="editLink" title="Editar Usuario"
+						rendered="#{(reporteInBean.isAuthorized(privilegio.ACCION_MODIFICAR))}"
+						actionListener="#{reporteInBean.editRoleUser(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage alt="Modificar" url="/resources/icons/edit.png"
+							styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="deleteLink" title="Eliminar Usuario"
+						rendered="#{(reporteInBean.isAuthorized(privilegio.ACCION_ELIMINAR))}"
+						actionListener="#{reporteInBean.deleteRoleUser(row)}"
+						update=":frmDetalle">
+						<h:graphicImage alt="Eliminar" url="/resources/icons/delete.png" />
+						<p:confirm header="Confirmación"
+							message="¿Está seguro que desea eliminar este registro?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<h:commandLink id="reenviarLink"
+						actionListener="#{reporteInBean.exportar(row.id)}"
+						title="EXPORTAR">
+						<h:graphicImage id="deleteImage" alt="Eliminar"
+							url="/resources/icons/excel.png" styleClass="icon" />
+
+					</h:commandLink>
+
+				</p:column>
+
+				<p:column headerText="NOMBRE" filterBy="#{row.nombre}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.nombre}" />
+				</p:column>
+
+
+				<p:column sortBy="#{row.fecha}" filterBy="#{row.fecha}"
+					headerText="FECHA">
+					<h:outputText value="#{row.fecha}" />
+				</p:column>
+
+				<p:column sortBy="#{row.fechaInIncidencia}"
+					filterBy="#{row.fechaInIncidencia}"
+					headerText="FECHA INCIDENCIA INICIAL">
+					<h:outputText value="#{row.fechaInIncidencia}" />
+				</p:column>
+
+				<p:column sortBy="#{row.fechaFinIncidencia}"
+					filterBy="#{row.fechaFinIncidencia}"
+					headerText="FECHA INCIDENCIA FINAL">
+					<h:outputText value="#{row.fechaFinIncidencia}" />
+				</p:column>
+
+				<p:column headerText="REPORTA" filterBy="#{row.reporta}"
+					filterMatchMode="contains">
+					<h:outputText value="#{row.reporta}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

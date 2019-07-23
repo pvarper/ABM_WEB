@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			header="Please wait..." appendTo="@(body)" closable="false"
+			resizable="false">
+
+			<h:graphicImage id="deleteImage" alt="Eliminar"
+				url="/resources/icons/ajax-loader-bar.gif" styleClass="icon" />
+
+		</p:dialog>
+
+		<p:dialog header="Información" id="verinformacionId"
+			widgetVar="verinformacion" visible="#{documentoBean.visibleVerInfo}"
+			resizable="false" modal="true" appendTo="@(body)" width="500px"
+			showEffect="explode" hideEffect="explode">
+			<h:form id="frmInfo">
+				<h:panelGrid columns="1">
+					<p:outputLabel value="Informacion:" />
+					<p:panel>
+						<pre>
+						<p:outputLabel value="#{documentoBean.pla.descripcion}" style="white-space: pre-wrap" escape="false"/>					
+						</pre>
+					</p:panel>
+
+				</h:panelGrid>
+
+				<p:commandButton id="btnSalir" value="Salir" process="@this"
+					actionListener="#{documentoBean.setVisibleVerInfo(false)}"
+					update=":verinformacionId :frmDatos :frmDetalle">
+				</p:commandButton>
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog id="dlgNuevoEditarId" widgetVar="dlgNuevoEditar" width="50%"
+			closeOnEscape="false" header="Nuevo/editar Documento" modal="true"
+			resizable="false" appendTo="@(body)"
+			visible="#{documentoBean.visibleNuevoEditar}" closable="false">
+			<h:form id="frmDatos">
+				<p:panel id="iddd">
+					<p:panel rendered="#{(documentoBean.edit)?false:true}">
+						<p:selectOneRadio id="idMasivo"
+							value="#{documentoBean.radioButton}">
+							<f:selectItem itemLabel="Documento" itemValue="1" />
+							<f:selectItem itemLabel="Información" itemValue="2" />
+							<p:ajax event="change" update="iddd" />
+						</p:selectOneRadio>
+					</p:panel>
+					<br />
+					
+						<p:scrollPanel mode="native" style="height:280px">
+							<h:panelGrid columns="2">
+								<p:outputLabel for="itPlaId" rendered="#{documentoBean.edit}"
+									value="Id Documento:" />
+								<p:inputText id="itPlaId" rendered="#{documentoBean.edit}"
+									disabled="true" size="30" value="#{documentoBean.pla.id}" />
+								<h:outputLabel value="Plataforma:*" styleClass="name" />
+								<p:selectOneMenu id="Area1" filter="true" filterMatchMode="contains"
+									value="#{documentoBean.selectedPlataforma}"
+									style="width: 188px">
+									<f:selectItems value="#{documentoBean.selectPlataformas}" />
+								</p:selectOneMenu>
+
+								<h:outputLabel value="Tipo de Documento:*" styleClass="name" />
+								<p:selectOneMenu id="Area2" filter="true" filterMatchMode="contains"
+									value="#{documentoBean.selectedTipo}" style="width: 188px">
+									<f:selectItems value="#{documentoBean.selectTipo}" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="itNombre" value="Nombre:*"
+									rendered="#{documentoBean.radioButton.equalsIgnoreCase(2)?true:false}" />
+								<p:inputText id="itNombre" label="Nombre" size="30"
+									rendered="#{documentoBean.radioButton.equalsIgnoreCase(2)?true:false}"
+									maxlength="30" value="#{documentoBean.pla.nombre}"
+									validatorMessage="El campo Nombre es obligatorio y no permite caracteres especiales">
+									<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}" />
+								</p:inputText>
+
+								<p:outputLabel for="itPalClave" value="Palabras Clave:*" />
+								<p:inputTextarea id="itPalClave" rows="5" cols="60"
+									maxlength="200" value="#{documentoBean.pla.clave}"
+									label="Palabras Claves"
+									validatorMessage="Para este campo se filtraron los caracteres especiales">
+									<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}">
+									</f:validateRegex>
+								</p:inputTextarea>
+
+								<p:outputLabel for="itDescr" value="Información:*"
+									rendered="#{documentoBean.radioButton.equalsIgnoreCase(2)?true:false}" />
+								<p:inputTextarea id="itDescr" rows="5" cols="60" style="white-space: pre-wrap"
+									maxlength="5000" value="#{documentoBean.pla.descripcion}" 
+									label="Informacion" autoResize="false"
+									rendered="#{documentoBean.radioButton.equalsIgnoreCase(2)?true:false}"
+									validatorMessage="Para este campo se filtraron los caracteres especiales">
+									<f:validateRegex pattern="#{properties.EXPRESION_REGULAR_TODO}">
+									</f:validateRegex>
+								</p:inputTextarea>
+
+								<h:outputText value="Cargar Archivos : *"
+									rendered="#{(((documentoBean.radioButton.equalsIgnoreCase(1)) and (documentoBean.radioEditarDoc.equalsIgnoreCase(1))))?true:false}" />
+								<p:fileUpload
+									fileUploadListener="#{documentoBean.handleFileUpload}"
+									rendered="#{(((documentoBean.radioButton.equalsIgnoreCase(1)) and (documentoBean.radioEditarDoc.equalsIgnoreCase(1))))?true:false}"
+									onstart="PF('statusDialog').show();"
+									oncomplete="PF('statusDialog').hide();" mode="advanced"
+									auto="true" label="Seleccionar Archivo" sizeLimit="104857600"
+									invalidSizeMessage="El tamaño es demasiado grande"
+									allowTypes="/(\.|\/)(txt|csv|xlsx|xls|doc|png|pdf|jpg|docx|sql|html|htm|sh|jpeg)$/">
+								</p:fileUpload>
+							</h:panelGrid>
+
+							<p:selectOneRadio id="idEditDoc"
+								rendered="#{documentoBean.editRadio}"
+								value="#{documentoBean.radioEditarDoc}">
+								<f:selectItem itemLabel="No Editar Documento" itemValue="2" />
+								<f:selectItem itemLabel="Editar Documento" itemValue="1" />
+								<p:ajax event="change" update="iddd" />
+							</p:selectOneRadio>
+
+						</p:scrollPanel>
+					</p:panel>
+
+					<h:panelGrid columns="3">
+
+						<p:commandButton id="btnGuardar" value="Guardar"
+							actionListener="#{documentoBean.guardarDocumento()}"
+							update=":dlgNuevoEditarId :frmDatos :frmDetalle" />
+
+						<p:commandButton id="btnSalir" value="Salir" process="@this"
+							actionListener="#{documentoBean.setVisibleNuevoEditar(false)}"
+							update=":dlgNuevoEditarId :frmDatos :frmDetalle">
+							<p:resetInput target="frmDatos" />
+						</p:commandButton>
+
+					</h:panelGrid>
+
+				<br />
+
+
+
+			</h:form>
+		</p:dialog>
+
+		<h:form id="frmDetalle">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<h1>GESTIÓN DE DOCUMENTOS</h1>
+
+			<p:commandButton value="Nuevo" icon="ui-icon-document"
+				rendered="#{documentoBean.isAuthorized(privilegio.ACCION_CREAR)}"
+				style="width:140px;"
+				actionListener="#{documentoBean.newplauerimiento()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Editar" icon="ui-icon-pencil"
+				rendered="#{documentoBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+				style="width:140px;" actionListener="#{documentoBean.ediTArea()}"
+				update=":dlgNuevoEditarId :frmDatos" />
+
+			<p:commandButton value="Eliminar" icon="ui-icon-trash"
+				style="width:140px;"
+				rendered="#{documentoBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+				actionListener="#{documentoBean.delete()}" update=":frmDetalle">
+				<p:confirm header="Confirmación"
+					message="¿Esta seguro que desea eliminar este registro?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+			<br />
+			<p:dataTable var="row" value="#{documentoBean.listPlat}" id="tab"
+				paginator="true" rows="10" first="0"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" selectionMode="single"
+				selection="#{documentoBean.pla}" rowKey="#{row.id}">
+				<f:facet name="header">LISTA DE DOCUMENTOS</f:facet>
+
+				<p:column style="text-align: center;" headerText="ACCIONES">
+
+					
+					<p:commandLink id="verLink" title="Ver Informacion"
+						rendered="#{(row.ruta==null)?true:false}"
+						update=":verinformacionId :frmInfo"
+						actionListener="#{documentoBean.verInfo(row)}">
+						<h:graphicImage id="verImage" alt="Ver"
+							url="/resources/icons/icono_ver.png" styleClass="icon" />
+					</p:commandLink>
+					
+					<p:commandButton value="" ajax="false" title="Descargar"
+						rendered="#{(row.ruta==null)?false:true}"
+						onclick="PrimeFaces.monitorDownload(start, stop);"
+						style="height:25px; width:24px; border:0px none; background:transparent  url('../resources/icons/Button-Download.png;');">
+						<p:fileDownload value="#{documentoBean.getFile(row.id)}" />
+					</p:commandButton>
+
+					<p:commandLink id="editLink" title="Editar Documento"
+						rendered="#{documentoBean.isAuthorized(privilegio.ACCION_MODIFICAR)}"
+						actionListener="#{documentoBean.ediTArea(row)}"
+						update=":dlgNuevoEditarId :frmDatos">
+						<h:graphicImage id="editImage" alt="Modificar"
+							url="/resources/icons/edit.png" styleClass="icon" />
+					</p:commandLink>
+
+					<p:commandLink id="deleteLink" title="Eliminar Documento"
+						rendered="#{documentoBean.isAuthorized(privilegio.ACCION_ELIMINAR)}"
+						actionListener="#{documentoBean.delete(row)}" update=":frmDetalle">
+						<h:graphicImage id="deleteImage" alt="Eliminar"
+							url="/resources/icons/delete.png" styleClass="icon" />
+						<p:confirm header="Confirmación"
+							message="¿Esta seguro que desea eliminar este registro?"
+							icon="ui-icon-alert" />
+					</p:commandLink>
+
+					
+
+				</p:column>
+
+				<p:column headerText="NOMBRE" style="text-align: center;"
+					filterBy="#{row.nombre}" filterMatchMode="contains">
+					<h:outputText value="#{row.nombre}" />
+				</p:column>
+
+				<p:column headerText="RUTA" style="text-align: center;"
+					filterBy="#{row.ruta}" filterMatchMode="contains">
+					<h:outputText value="#{row.ruta}" />
+				</p:column>
+
+				<p:column headerText="PLATAFORMA" style="text-align: center;"
+					filterBy="#{row.plataformaId.nombre}" filterMatchMode="contains">
+					<h:outputText value="#{row.plataformaId.nombre}" width="100px" />
+				</p:column>
+
+				<p:column headerText="TIPO" style="text-align: center;"
+					filterBy="#{row.TTipoDocumento.nombre}" filterMatchMode="contains">
+					<h:outputText value="#{row.TTipoDocumento.nombre}" />
+				</p:column>
+
+				<p:column headerText="PALABRA CLAVE" style="text-align: center;"
+					filterBy="#{row.clave}" filterMatchMode="contains">
+					<h:outputText value="#{row.clave}" />
+				</p:column>
+
+
+
+
+
+
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

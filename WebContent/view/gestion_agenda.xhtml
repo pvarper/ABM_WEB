@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="./../resources/templates/simple.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+		PrimeFaces.locales['es'] = {
+			    closeText: 'Cerrar',
+			    prevText: 'Anterior',
+			    nextText: 'Siguiente',
+			    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+			    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+			    dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+			    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+			    dayNamesMin: ['D','L','M','X','J','V','S'],
+			    weekHeader: 'Semana',
+			    firstDay: 1,
+			    isRTL: false,
+			    showMonthAfterYear: false,
+			    yearSuffix: '',
+			    timeOnlyTitle: 'Sólo hora',
+			    timeText: 'Tiempo',
+			    hourText: 'Hora',
+			    minuteText: 'Minuto',
+			    secondText: 'Segundo',
+			    currentText: 'Fecha actual',
+			    ampm: false,
+			    month: 'Mes',
+			    week: 'Semana',
+			    day: 'Día',
+			    allDayText : 'Todo el día'
+			};
+</script>
+		<style type="text/css">
+.value {
+	width: 1500px;
+}
+</style>
+		<h:form>
+		<p:commandButton id="buttosTarea" value="Mis tareas"/>
+			<p:growl id="messages" showDetail="true" />
+			<h:panelGrid columnClasses="value">
+				<p:schedule id="schedule" value="#{agendaActividadBean.eventModel}"
+					widgetVar="myschedule" timeZone="GMT-4" locale="es">
+					<p:ajax event="dateSelect"
+						listener="#{agendaActividadBean.onDateSelect}" update="nuevo"
+						oncomplete="PF('frm_Nuevo').show();" />
+					<p:ajax event="eventSelect"
+						listener="#{agendaActividadBean.onEventSelect}"
+						update="nuevo" oncomplete="PF('frm_Nuevo').show();" />
+				</p:schedule>
+			</h:panelGrid>
+			<!-- INGRESAR NUEVA TAREA -->
+			<p:dialog widgetVar="frm_Nuevo" header="Tareas" showEffect="clip"
+				hideEffect="clip">
+				<h:panelGrid id="nuevo" columns="2">
+					<p:outputLabel for="title" value="Titulo:" />
+					<p:inputText id="title" value="#{agendaActividadBean.event.title}"
+						required="true" />
+					<p:outputLabel for="title" value="Tipo Solicitud:" />
+					<p:selectOneMenu id="tipoSolicitud" style="width:170px"
+						value="#{agendaActividadBean.tipoSolicitud}" filter="true"
+						filterMatchMode="contains"
+						onselect="#{agendaActividadBean.tipoSolicitud}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{agendaActividadBean.list_tipoSolicitud}"
+							var="solicitud" itemLabel="#{solicitud.tipo}"
+							itemValue="#{solicitud.id}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="title" value="Tipo Actividad:" />
+					<p:selectOneMenu id="tipoActividad" style="width:170px"
+						value="#{agendaActividadBean.tipoActividad}" filter="true"
+						filterMatchMode="contains"
+						onselect="#{agendaActividadBean.tipoActividad}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{agendaActividadBean.list_tipoActividad}"
+							var="actividad" itemLabel="#{actividad.nombre}"
+							itemValue="#{actividad.id}" />
+					</p:selectOneMenu>
+					
+	
+					
+					
+					<p:outputLabel for="title" value="Area Funcional" />
+					<p:selectOneMenu id="area_func" style="width:170px"
+						value="#{agendaActividadBean.areaFuncional}" filter="true"
+						filterMatchMode="contains"
+						onselect="#{agendaActividadBean.areaFuncional}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{agendaActividadBean.list_areaFuncional}"
+							var="areaFuncional" itemLabel="#{areaFuncional.nombre}"
+							itemValue="#{areaFuncional.id}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="title" value="Area Solicitante:" />
+					<p:selectOneMenu id="area" style="width:170px"
+						value="#{agendaActividadBean.area}" filter="true"
+						filterMatchMode="contains" onselect="#{agendaActividadBean.area}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{agendaActividadBean.list_area}" var="areaSoli"
+							itemLabel="#{areaSoli.nombre}" itemValue="#{areaSoli.id}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="from" value="Fecha Inicio:" />
+					<p:calendar id="from"
+						value="#{agendaActividadBean.event.startDate}" timeZone="GMT-4"
+						pattern="dd/MM/yyyy HH:mm" />
+					<p:outputLabel for="to" value="Fecha Fin:" />
+					<p:calendar id="to" value="#{agendaActividadBean.event.endDate}"
+						timeZone="GMT-4" pattern="dd/MM/yyyy HH:mm" />
+					<p:outputLabel for="allDay" value="Todo el Dia:" />
+					<h:selectBooleanCheckbox id="allDay"
+						value="#{agendaActividadBean.event.allDay}" />
+					
+					</h:panelGrid>
+					
+						<p:outputLabel for="title" value="Area a asignar" />
+					<p:selectOneMenu id="area_asig" style="width:170px"
+						value="#{agendaActividadBean.area_asignada}" filter="true"
+						filterMatchMode="contains"
+						onselect="#{agendaActividadBean.area_asignada}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItems value="#{agendaActividadBean.listAgendaAreaAsignada()}"
+							var="areaAsig" itemLabel="#{areaAsig.nombre}"
+							itemValue="#{areaAsig.rolId}" />	
+					</p:selectOneMenu>
+					<h:panelGrid columns="2">
+					
+				
+				
+					 
+					    
+					 
+					 
+					
+					 
+					 
+					 
+					
+ 				<p:pickList value="#{pickListBean.listModel}"
+                var="emp"
+                itemLabel="#{emp.name} (#{emp.dept})"
+                itemValue="#{emp}"
+                converter="empConverter"/>
+				</h:panelGrid>
+				
+		
+
+					<p:commandButton id="addButton" value="Modificar"
+						action="#{agendaActividadBean.addEvent}"
+						oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+				
+				<p:commandButton value="Submit" update="display" oncomplete="PF('dlg').show()" icon="pi pi-check" />
+			
+			
+			<p:dialog header="Tareas" showEffect="clip"
+				hideEffect="clip" widgetVar="dlg">	
+        		<p:panelGrid id="display" columnClasses="label,value">
+            <h:outputText value="Area asignada" />
+            <h:outputText value="#{agendaActividadBean.areaFuncional}" />
+            <h:outputText value="#{agendaActividadBean.muRol.rolId}" />
+            <h:outputText value="#{agendaActividadBean.muRol.nombre}" />
+	   		 </p:panelGrid>
+    		</p:dialog>
+				
+				<!-- FIN -->
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
